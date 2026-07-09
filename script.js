@@ -370,10 +370,12 @@ const translations = {
   English: {
     htmlLang: "en",
     selectedLanguage: "Selected language: English",
+    languagePrompt: "Please choose a language to continue.",
     loading: "GovAssist is preparing a simple answer...",
-    guidedLabel: "Guided help",
-    guidedTitle: service => `You selected: ${service}`,
-    guidedDescription: "What would you like help with?",
+    guidedLabel: "Step 2",
+    guidedTitle: service => `Pick a question for ${service}`,
+    guidedDescription:
+      "Choose a common question, or type your own question about this service.",
     close: "Close",
     chooseAnother: "Choose another service",
     ownQuestion: "Type my own question",
@@ -387,32 +389,54 @@ const translations = {
       brandHomeAria: "GovAssist AI home",
       brandDescription: "Simple guidance for Singapore digital services",
       mainNavAria: "Main navigation",
+      navHome: "Home",
       navLanguage: "Language",
       navServices: "Services",
       navChat: "Chat",
-      heroLabel: "Friendly digital assistance",
-      heroTitle: "Clear help for government services, one question at a time.",
+      heroLabel: "Start here",
+      heroTitle:
+        "Choose your language first. Then GovAssist will guide you step by step.",
       heroDescription:
-        "GovAssist AI gives simple, step-by-step guidance for common Singapore online services.",
+        "Get simple help for common Singapore government websites without sharing private details.",
       heroReassurance:
-        "Start by choosing a language, then select one service. Do not enter NRIC, passwords, OTPs or bank details.",
+        "Do not enter NRIC, passwords, OTPs or bank details.",
+      assistantIntroTitle: "I can help with government websites.",
+      assistantIntroDescription:
+        "First choose a service. Then pick a common question or type your own question.",
+      assistantIntroButton: "Get started",
+      introPickService: "Pick service",
+      introChooseQuestion: "Choose or type",
+      introReadAnswer: "Read answer",
+      heroImageAlt: "Two elderly people happily using a phone together",
+      journeyPreviewAria: "How GovAssist works",
+      journeyAskTitle: "Ask a question",
+      journeyAskDescription:
+        "Choose a common task or type your own question.",
+      journeyLearnTitle: "Learn the steps",
+      journeyLearnDescription:
+        "Read a clear answer in your selected language.",
+      journeyDoTitle: "Do it yourself anytime",
+      journeyDoDescription: "Use the guidance when you are ready.",
       accessibilityLabel: "Accessibility",
       accessibilityTitle: "Make the page easier to use",
       largerText: "Larger Text",
       smallerText: "Smaller Text",
       highContrast: "High Contrast",
       readLastAnswer: "Read Last Answer",
-      languageLabel: "Language",
+      languageLabel: "First step",
       languageTitle: "Choose your language",
       languageDescription:
         "GovAssist will use this language for the conversation.",
+      languagePrompt: "Please choose a language to continue.",
       servicesLabel: "Guided services",
-      servicesTitle: "Choose a service",
-      servicesDescription: "Select one service to see common tasks.",
+      servicesTitle: "Pick a service",
+      servicesDescription:
+        "Choose the government service you need help with.",
       chooseAnotherServiceBack: "← Choose another service",
-      chatLabel: "AI assistant",
+      chatLabel: "Step 3",
       chatTitle: "Ask GovAssist AI",
-      chatDescription: "Read the answer here, or type your own question.",
+      chatDescription:
+        "Ask about the service you picked. Read the answer here.",
       newConversation: "New Conversation",
       privacyAria: "Privacy reminder",
       privacyTitle: "Protect your information",
@@ -507,10 +531,11 @@ translations["Simplified Chinese"] = {
   ...translations.English,
   htmlLang: "zh-Hans",
   selectedLanguage: "已选择语言：简体中文",
+  languagePrompt: "请选择一种语言以继续。",
   loading: "GovAssist 正在准备简单易懂的回答……",
-  guidedLabel: "引导式帮助",
-  guidedTitle: service => `您已选择：${service}`,
-  guidedDescription: "您想获得哪方面的帮助？",
+  guidedLabel: "第二步",
+  guidedTitle: service => `请选择一个 ${service} 问题`,
+  guidedDescription: "选择常见问题，或输入有关这项服务的问题。",
   close: "关闭",
   chooseAnother: "选择其他服务",
   ownQuestion: "输入我自己的问题",
@@ -524,31 +549,48 @@ translations["Simplified Chinese"] = {
     brandHomeAria: "GovAssist AI 主页",
     brandDescription: "新加坡数码政府服务的简单指引",
     mainNavAria: "主导航",
+    navHome: "主页",
     navLanguage: "语言",
     navServices: "服务",
     navChat: "聊天",
-    heroLabel: "友善的数码协助",
-    heroTitle: "一步一步，清楚了解政府服务。",
+    heroLabel: "从这里开始",
+    heroTitle: "请先选择语言。之后 GovAssist 会一步一步引导您。",
     heroDescription:
-      "GovAssist AI 为常见的新加坡网上服务提供简单的分步指引。",
+      "为常见的新加坡政府网站提供简单帮助，同时不需要分享个人资料。",
     heroReassurance:
-      "请先选择语言，然后选择一项服务。请勿输入 NRIC、密码、OTP 或银行资料。",
+      "请勿输入 NRIC、密码、OTP 或银行资料。",
+    assistantIntroTitle: "我可以帮助您使用政府网站。",
+    assistantIntroDescription:
+      "请先选择一项服务。然后选择常见问题，或输入自己的问题。",
+    assistantIntroButton: "开始",
+    introPickService: "选择服务",
+    introChooseQuestion: "选择或输入",
+    introReadAnswer: "阅读回答",
+    heroImageAlt: "两位年长者开心地一起使用手机",
+    journeyPreviewAria: "GovAssist 如何帮助您",
+    journeyAskTitle: "提出问题",
+    journeyAskDescription: "选择常见任务，或输入您自己的问题。",
+    journeyLearnTitle: "了解步骤",
+    journeyLearnDescription: "用您选择的语言阅读清楚的回答。",
+    journeyDoTitle: "随时自己完成",
+    journeyDoDescription: "准备好时，就按照指引操作。",
     accessibilityLabel: "辅助功能",
     accessibilityTitle: "让页面更容易使用",
     largerText: "放大文字",
     smallerText: "缩小文字",
     highContrast: "高对比度",
     readLastAnswer: "朗读上一条回答",
-    languageLabel: "语言",
+    languageLabel: "第一步",
     languageTitle: "选择您的语言",
     languageDescription: "GovAssist 将在本次对话中使用此语言。",
-    servicesLabel: "引导式服务",
+    languagePrompt: "请选择一种语言以继续。",
+    servicesLabel: "第一步",
     servicesTitle: "选择一项服务",
-    servicesDescription: "请选择一项服务以查看常见任务。",
+    servicesDescription: "请选择您需要帮助的政府服务。",
     chooseAnotherServiceBack: "← 选择其他服务",
-    chatLabel: "AI 助手",
+    chatLabel: "第三步",
     chatTitle: "询问 GovAssist AI",
-    chatDescription: "在这里阅读回答，或输入您自己的问题。",
+    chatDescription: "询问您所选择的服务。在这里阅读回答。",
     newConversation: "新的对话",
     privacyAria: "隐私提醒",
     privacyTitle: "保护您的资料",
@@ -639,10 +681,12 @@ translations["Bahasa Melayu"] = {
   ...translations.English,
   htmlLang: "ms",
   selectedLanguage: "Bahasa dipilih: Bahasa Melayu",
+  languagePrompt: "Sila pilih bahasa untuk teruskan.",
   loading: "GovAssist sedang menyediakan jawapan yang mudah...",
-  guidedLabel: "Bantuan berpandu",
-  guidedTitle: service => `Anda memilih: ${service}`,
-  guidedDescription: "Apakah bantuan yang anda perlukan?",
+  guidedLabel: "Langkah 2",
+  guidedTitle: service => `Pilih soalan untuk ${service}`,
+  guidedDescription:
+    "Pilih soalan biasa, atau taip soalan anda tentang perkhidmatan ini.",
   close: "Tutup",
   chooseAnother: "Pilih perkhidmatan lain",
   ownQuestion: "Taip soalan saya sendiri",
@@ -656,35 +700,55 @@ translations["Bahasa Melayu"] = {
     brandHomeAria: "Laman utama GovAssist AI",
     brandDescription: "Panduan mudah untuk perkhidmatan digital Singapura",
     mainNavAria: "Navigasi utama",
+    navHome: "Laman utama",
     navLanguage: "Bahasa",
     navServices: "Perkhidmatan",
     navChat: "Sembang",
-    heroLabel: "Bantuan digital yang mesra",
+    heroLabel: "Mula di sini",
     heroTitle:
-      "Bantuan jelas untuk perkhidmatan pemerintah, satu soalan pada satu masa.",
+      "Pilih bahasa dahulu. Kemudian GovAssist akan membimbing anda langkah demi langkah.",
     heroDescription:
-      "GovAssist AI memberi panduan langkah demi langkah untuk perkhidmatan dalam talian Singapura yang biasa digunakan.",
+      "Dapatkan bantuan mudah untuk laman pemerintah Singapura tanpa berkongsi butiran peribadi.",
     heroReassurance:
-      "Mulakan dengan memilih bahasa, kemudian pilih satu perkhidmatan. Jangan masukkan NRIC, kata laluan, OTP atau maklumat bank.",
+      "Jangan masukkan NRIC, kata laluan, OTP atau maklumat bank.",
+    assistantIntroTitle: "Saya boleh membantu dengan laman pemerintah.",
+    assistantIntroDescription:
+      "Pilih perkhidmatan dahulu. Kemudian pilih soalan biasa atau taip soalan anda.",
+    assistantIntroButton: "Mula",
+    introPickService: "Pilih perkhidmatan",
+    introChooseQuestion: "Pilih atau taip",
+    introReadAnswer: "Baca jawapan",
+    heroImageAlt:
+      "Dua warga emas gembira menggunakan telefon bersama-sama",
+    journeyPreviewAria: "Cara GovAssist membantu",
+    journeyAskTitle: "Tanya soalan",
+    journeyAskDescription:
+      "Pilih tugas biasa atau taip soalan anda sendiri.",
+    journeyLearnTitle: "Pelajari langkah-langkah",
+    journeyLearnDescription:
+      "Baca jawapan yang jelas dalam bahasa pilihan anda.",
+    journeyDoTitle: "Lakukan sendiri bila-bila masa",
+    journeyDoDescription: "Gunakan panduan apabila anda sudah bersedia.",
     accessibilityLabel: "Kebolehcapaian",
     accessibilityTitle: "Jadikan halaman ini lebih mudah digunakan",
     largerText: "Besarkan Teks",
     smallerText: "Kecilkan Teks",
     highContrast: "Kontras Tinggi",
     readLastAnswer: "Baca Jawapan Terakhir",
-    languageLabel: "Bahasa",
+    languageLabel: "Langkah pertama",
     languageTitle: "Pilih bahasa anda",
     languageDescription:
       "GovAssist akan menggunakan bahasa ini untuk perbualan.",
-    servicesLabel: "Perkhidmatan berpandu",
+    languagePrompt: "Sila pilih bahasa untuk teruskan.",
+    servicesLabel: "Langkah 1",
     servicesTitle: "Pilih perkhidmatan",
     servicesDescription:
-      "Pilih satu perkhidmatan untuk melihat tugas biasa.",
+      "Pilih perkhidmatan pemerintah yang anda perlukan bantuan.",
     chooseAnotherServiceBack: "← Pilih perkhidmatan lain",
-    chatLabel: "Pembantu AI",
+    chatLabel: "Langkah 3",
     chatTitle: "Tanya GovAssist AI",
     chatDescription:
-      "Baca jawapan di sini, atau taip soalan anda sendiri.",
+      "Tanya tentang perkhidmatan yang anda pilih. Baca jawapan di sini.",
     newConversation: "Perbualan Baharu",
     privacyAria: "Peringatan privasi",
     privacyTitle: "Lindungi maklumat anda",
@@ -778,10 +842,12 @@ translations.Tamil = {
   ...translations.English,
   htmlLang: "ta",
   selectedLanguage: "தேர்ந்தெடுக்கப்பட்ட மொழி: தமிழ்",
+  languagePrompt: "தொடர ஒரு மொழியைத் தேர்ந்தெடுக்கவும்.",
   loading: "GovAssist எளிய பதிலைத் தயாரிக்கிறது...",
-  guidedLabel: "வழிகாட்டப்பட்ட உதவி",
-  guidedTitle: service => `நீங்கள் தேர்ந்தெடுத்தது: ${service}`,
-  guidedDescription: "உங்களுக்கு எந்த உதவி வேண்டும்?",
+  guidedLabel: "படி 2",
+  guidedTitle: service => `${service} கேள்வியைத் தேர்ந்தெடுக்கவும்`,
+  guidedDescription:
+    "பொதுவான கேள்வியைத் தேர்ந்தெடுக்கவும் அல்லது இந்த சேவையைப் பற்றி உங்கள் கேள்வியைத் தட்டச்சு செய்யவும்.",
   close: "மூடு",
   chooseAnother: "மற்றொரு சேவையைத் தேர்ந்தெடுக்கவும்",
   ownQuestion: "என் சொந்த கேள்வியைத் தட்டச்சு செய்கிறேன்",
@@ -795,34 +861,56 @@ translations.Tamil = {
     brandHomeAria: "GovAssist AI முகப்பு",
     brandDescription: "சிங்கப்பூர் டிஜிட்டல் சேவைகளுக்கான எளிய வழிகாட்டல்",
     mainNavAria: "முக்கிய வழிசெலுத்தல்",
+    navHome: "முகப்பு",
     navLanguage: "மொழி",
     navServices: "சேவைகள்",
     navChat: "அரட்டை",
-    heroLabel: "நட்பான டிஜிட்டல் உதவி",
-    heroTitle: "அரசு சேவைகளுக்கு தெளிவான உதவி, ஒரு கேள்வி ஒரு நேரத்தில்.",
+    heroLabel: "இங்கே தொடங்குங்கள்",
+    heroTitle:
+      "முதலில் உங்கள் மொழியைத் தேர்ந்தெடுக்கவும். பிறகு GovAssist படிப்படியாக வழிகாட்டும்.",
     heroDescription:
-      "GovAssist AI பொதுவான சிங்கப்பூர் ஆன்லைன் சேவைகளுக்கு எளிய படிப்படியான வழிகாட்டலை வழங்குகிறது.",
+      "தனிப்பட்ட விவரங்களை பகிராமல் பொதுவான சிங்கப்பூர் அரசு இணையதளங்களுக்கு எளிய உதவி பெறுங்கள்.",
     heroReassurance:
-      "முதலில் மொழியைத் தேர்ந்தெடுத்து, பிறகு ஒரு சேவையைத் தேர்ந்தெடுக்கவும். NRIC, கடவுச்சொற்கள், OTP அல்லது வங்கி விவரங்களை உள்ளிட வேண்டாம்.",
+      "NRIC, கடவுச்சொற்கள், OTP அல்லது வங்கி விவரங்களை உள்ளிட வேண்டாம்.",
+    assistantIntroTitle: "அரசு இணையதளங்களுக்கு நான் உதவ முடியும்.",
+    assistantIntroDescription:
+      "முதலில் ஒரு சேவையைத் தேர்ந்தெடுக்கவும். பிறகு பொதுவான கேள்வியைத் தேர்ந்தெடுக்கவும் அல்லது உங்கள் கேள்வியைத் தட்டச்சு செய்யவும்.",
+    assistantIntroButton: "தொடங்குங்கள்",
+    introPickService: "சேவையைத் தேர்ந்தெடுக்கவும்",
+    introChooseQuestion: "தேர்வு செய்யவும் அல்லது தட்டச்சு செய்யவும்",
+    introReadAnswer: "பதிலைப் படிக்கவும்",
+    heroImageAlt:
+      "இரு முதியவர்கள் மகிழ்ச்சியாக ஒன்றாக தொலைபேசியைப் பயன்படுத்துகின்றனர்",
+    journeyPreviewAria: "GovAssist எவ்வாறு உதவுகிறது",
+    journeyAskTitle: "கேள்வி கேளுங்கள்",
+    journeyAskDescription:
+      "பொதுவான பணியைத் தேர்ந்தெடுக்கவும் அல்லது உங்கள் சொந்த கேள்வியைத் தட்டச்சு செய்யவும்.",
+    journeyLearnTitle: "படிகளை அறியுங்கள்",
+    journeyLearnDescription:
+      "நீங்கள் தேர்ந்தெடுத்த மொழியில் தெளிவான பதிலைப் படிக்கவும்.",
+    journeyDoTitle: "எப்போது வேண்டுமானாலும் நீங்களே செய்யுங்கள்",
+    journeyDoDescription:
+      "நீங்கள் தயாராக இருக்கும்போது வழிகாட்டலைப் பயன்படுத்துங்கள்.",
     accessibilityLabel: "அணுகல்தன்மை",
     accessibilityTitle: "இந்தப் பக்கத்தை பயன்படுத்த எளிதாக்கவும்",
     largerText: "பெரிய எழுத்து",
     smallerText: "சிறிய எழுத்து",
     highContrast: "அதிக மாறுபாடு",
     readLastAnswer: "கடைசி பதிலை வாசிக்கவும்",
-    languageLabel: "மொழி",
+    languageLabel: "முதல் படி",
     languageTitle: "உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்",
     languageDescription:
       "GovAssist இந்த உரையாடலில் இந்த மொழியைப் பயன்படுத்தும்.",
-    servicesLabel: "வழிகாட்டப்பட்ட சேவைகள்",
+    languagePrompt: "தொடர ஒரு மொழியைத் தேர்ந்தெடுக்கவும்.",
+    servicesLabel: "படி 1",
     servicesTitle: "ஒரு சேவையைத் தேர்ந்தெடுக்கவும்",
     servicesDescription:
-      "பொதுவான பணிகளைப் பார்க்க ஒரு சேவையைத் தேர்ந்தெடுக்கவும்.",
+      "உங்களுக்கு உதவி தேவைப்படும் அரசு சேவையைத் தேர்ந்தெடுக்கவும்.",
     chooseAnotherServiceBack: "← மற்றொரு சேவையைத் தேர்ந்தெடுக்கவும்",
-    chatLabel: "AI உதவியாளர்",
+    chatLabel: "படி 3",
     chatTitle: "GovAssist AI-யிடம் கேளுங்கள்",
     chatDescription:
-      "பதிலை இங்கே படிக்கவும், அல்லது உங்கள் சொந்த கேள்வியைத் தட்டச்சு செய்யவும்.",
+      "நீங்கள் தேர்ந்தெடுத்த சேவையைப் பற்றி கேளுங்கள். பதிலை இங்கே படிக்கவும்.",
     newConversation: "புதிய உரையாடல்",
     privacyAria: "தனியுரிமை நினைவூட்டல்",
     privacyTitle: "உங்கள் தகவலை பாதுகாக்கவும்",
@@ -955,15 +1043,32 @@ const followUpChooseService =
   document.getElementById("followUpChooseService");
 const followUpTypeQuestion =
   document.getElementById("followUpTypeQuestion");
+const startAssistantButton =
+  document.getElementById("startAssistant");
 
 
-let currentLanguage =
-  localStorage.getItem("govassistLanguage") || "English";
+const queryLanguage =
+  new URLSearchParams(window.location.search).get("language");
+
+if (queryLanguage && translations[queryLanguage]) {
+  localStorage.setItem("govassistLanguage", queryLanguage);
+}
+
+const savedLanguage =
+  queryLanguage && translations[queryLanguage]
+    ? queryLanguage
+    : localStorage.getItem("govassistLanguage");
+
+let currentLanguage = savedLanguage || "English";
 
 if (!translations[currentLanguage]) {
   currentLanguage = "English";
-  localStorage.setItem("govassistLanguage", currentLanguage);
+  localStorage.removeItem("govassistLanguage");
 }
+
+let hasChosenLanguage = Boolean(
+  savedLanguage && translations[savedLanguage]
+);
 
 let currentService =
   localStorage.getItem("govassistService") || "";
@@ -971,7 +1076,7 @@ let currentService =
 let lastAssistantAnswer = "";
 let lastSafeMessage = "";
 let requestInProgress = false;
-let currentJourneyStage = "service";
+let currentJourneyStage = hasChosenLanguage ? "intro" : "language";
 let currentSpeech = null;
 let currentSpeechText = "";
 
@@ -1068,6 +1173,7 @@ function setJourneyStage(stage) {
 
   document.body.classList.remove(
     "stage-language",
+    "stage-intro",
     "stage-service",
     "stage-task",
     "stage-answer"
@@ -1932,7 +2038,9 @@ function updateLanguageControls() {
   document.documentElement.lang =
     languageHtmlCode(currentLanguage);
   applyInterfaceTranslations();
-  selectedLanguageText.textContent = text.selectedLanguage;
+  selectedLanguageText.textContent = hasChosenLanguage
+    ? text.selectedLanguage
+    : text.languagePrompt;
   pauseReadAloud.textContent = text.systemMessages.pauseReading;
   continueReadAloud.textContent =
     text.systemMessages.continueReading;
@@ -1942,6 +2050,7 @@ function updateLanguageControls() {
     .querySelectorAll("[data-language]")
     .forEach(button => {
       const selected =
+        hasChosenLanguage &&
         button.dataset.language === currentLanguage;
 
       button.classList.toggle(
@@ -1976,6 +2085,7 @@ document
   .forEach(button => {
     button.addEventListener("click", () => {
       currentLanguage = button.dataset.language;
+      hasChosenLanguage = true;
 
       localStorage.setItem(
         "govassistLanguage",
@@ -1985,14 +2095,31 @@ document
       updateLanguageControls();
 
       if (currentJourneyStage === "language") {
-        setJourneyStage("service");
-        document.getElementById("services").scrollIntoView({
+        setJourneyStage("intro");
+        document.getElementById("chatIntro")?.scrollIntoView({
           behavior: "smooth",
           block: "start"
         });
       }
     });
   });
+
+startAssistantButton?.addEventListener("click", () => {
+  if (!hasChosenLanguage) {
+    document
+      .querySelector("[data-language]")
+      ?.focus({ preventScroll: false });
+    return;
+  }
+
+  setJourneyStage("service");
+  setServiceListCollapsed(false);
+
+  document.getElementById("services").scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+});
 
 
 /* Start a fresh conversation */
@@ -2057,7 +2184,7 @@ document
   .addEventListener("click", () => {
     currentFontSize = Math.max(
       currentFontSize - 2,
-      16
+      12
     );
 
     applyFontSize();

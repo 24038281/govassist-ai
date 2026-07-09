@@ -1,0 +1,6 @@
+Place your real GovAssist AI logo image in this folder with this exact filename:
+
+govassist-logo.png
+
+The website already points to assets/govassist-logo.png from index.html and chat.html.
+Recommended: use a PNG with a transparent or white background and a wide horizontal shape.

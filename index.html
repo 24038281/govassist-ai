@@ -6,533 +6,180 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   >
-  <title>GovAssist AI</title>
+  <title>GovAssist AI | Simple Government Website Guidance</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
-  <header class="main-header">
-    <div class="header-inner">
-      <a
-        class="brand"
-        href="#top"
-        aria-label="GovAssist AI home"
-        data-i18n-attr="aria-label:brandHomeAria"
-      >
-        <span class="brand-icon" aria-hidden="true">GA</span>
-        <span>
-          <span class="brand-title">GovAssist AI</span>
-          <span class="brand-description" data-i18n="brandDescription">
-            Simple guidance for Singapore digital services
-          </span>
-        </span>
-      </a>
+<body class="landing-page">
+  <main id="top" class="landing-canvas">
+    <div class="landing-shape landing-shape-circle"></div>
+    <div class="landing-shape landing-shape-square"></div>
+    <div class="landing-shape landing-shape-plus"></div>
 
-      <nav aria-label="Main navigation" data-i18n-attr="aria-label:mainNavAria">
-        <a href="#language" data-i18n="navLanguage">Language</a>
-        <a href="#services" data-i18n="navServices">Services</a>
-        <a href="#chat" data-i18n="navChat">Chat</a>
-      </nav>
-    </div>
-  </header>
+    <section class="landing-shell" aria-labelledby="landingHeading">
+      <header class="landing-header">
+        <a class="landing-brand" href="#top" aria-label="GovAssist AI home">
+          <img
+            class="landing-logo"
+            src="assets/govassist-logo.png"
+            alt="GovAssist AI"
+            onerror="this.hidden=true; this.nextElementSibling.hidden=false;"
+          >
+          <span class="logo-fallback" hidden>GovAssist AI</span>
+        </a>
 
-  <main id="top">
-    <section class="hero" aria-labelledby="welcomeHeading">
-      <div class="content-narrow hero-content">
-        <p class="section-label" data-i18n="heroLabel">Friendly digital assistance</p>
+        <nav class="landing-nav" aria-label="Landing navigation">
+          <a href="#features" data-landing-i18n="navFeatures">Features</a>
+          <a href="#how-it-works" data-landing-i18n="navHow">How it works</a>
+          <a href="#language" data-landing-i18n="navLanguage">Language</a>
+        </nav>
+      </header>
 
-        <h1 id="welcomeHeading" data-i18n="heroTitle">
-          Clear help for government services, one question at a time.
-        </h1>
-
-        <p class="hero-description" data-i18n="heroDescription">
-          GovAssist AI gives simple, step-by-step guidance for common
-          Singapore online services.
-        </p>
-
-        <p class="reassurance" data-i18n="heroReassurance">
-          Start by choosing a language, then select one service.
-          Do not enter NRIC, passwords, OTPs or bank details.
-        </p>
-      </div>
-    </section>
-
-    <section
-      class="accessibility-section accessibility-toolbar"
-      aria-labelledby="accessibilityHeading"
-    >
-      <div class="toolbar-heading">
-        <p class="section-label" data-i18n="accessibilityLabel">Accessibility</p>
-        <h2 id="accessibilityHeading" data-i18n="accessibilityTitle">Make the page easier to use</h2>
-      </div>
-
-      <div class="button-row toolbar-actions">
-        <button id="increaseText" type="button" data-i18n="largerText">
-          Larger Text
-        </button>
-
-        <button id="decreaseText" type="button" data-i18n="smallerText">
-          Smaller Text
-        </button>
-
-        <button
-          id="contrastButton"
-          type="button"
-          aria-pressed="false"
-        >
-          <span data-i18n="highContrast">High Contrast</span>
-        </button>
-
-        <button id="readLastAnswer" type="button" data-i18n="readLastAnswer">
-          Read Last Answer
-        </button>
-
-        <button id="pauseReadAloud" type="button">
-          Pause
-        </button>
-
-        <button id="continueReadAloud" type="button">
-          Continue
-        </button>
-
-        <button id="stopReadAloud" type="button">
-          Stop
-        </button>
-      </div>
-    </section>
-
-    <section
-      id="language"
-      class="language-section"
-      aria-labelledby="languageHeading"
-    >
-      <div class="section-header">
-        <div>
-          <p class="section-label" data-i18n="languageLabel">Language</p>
-          <h2 id="languageHeading" data-i18n="languageTitle">Choose your language</h2>
-        </div>
-        <p data-i18n="languageDescription">
-          GovAssist will use this language for the conversation.
-        </p>
-      </div>
-
-      <div class="button-row language-buttons">
-        <button
-          type="button"
-          data-language="English"
-          aria-pressed="false"
-        >
-          English
-        </button>
-
-        <button
-          type="button"
-          data-language="Simplified Chinese"
-          aria-pressed="false"
-        >
-          &#31616;&#20307;&#20013;&#25991;
-        </button>
-
-        <button
-          type="button"
-          data-language="Bahasa Melayu"
-          aria-pressed="false"
-        >
-          Bahasa Melayu
-        </button>
-
-        <button
-          type="button"
-          data-language="Tamil"
-          aria-pressed="false"
-        >
-          &#2980;&#2990;&#3007;&#2996;&#3021;
-        </button>
-      </div>
-
-      <p id="selectedLanguage" class="selected-setting">
-        Selected language: English
-      </p>
-    </section>
-
-    <section
-      id="services"
-      class="services-section"
-      aria-labelledby="servicesHeading"
-    >
-      <div class="content-wide">
-        <div class="section-header">
-          <div>
-            <p class="section-label" data-i18n="servicesLabel">Guided services</p>
-            <h2 id="servicesHeading" data-i18n="servicesTitle">Choose a service</h2>
-          </div>
-          <p data-i18n="servicesDescription">
-            Select one service to see common tasks.
+      <div class="landing-hero-grid">
+        <div class="landing-copy">
+          <p class="landing-eyebrow" data-landing-i18n="eyebrow">
+            Friendly digital assistance
           </p>
-        </div>
 
-        <div class="service-grid">
-          <button
-            class="service-card"
-            type="button"
-            data-service="CPF"
-            aria-pressed="false"
-          >
-            <span class="service-icon" aria-hidden="true">CPF</span>
-            <span class="service-name">CPF</span>
-            <span class="service-description" data-service-description="CPF">
-              CPF balances and savings
-            </span>
-          </button>
+          <h1 id="landingHeading">
+            <span data-landing-i18n="headingLineOne">Welcome to your simple</span>
+            <span data-landing-i18n="headingLineTwo">government website guide</span>
+          </h1>
 
-          <button
-            class="service-card"
-            type="button"
-            data-service="HDB"
-            aria-pressed="false"
-          >
-            <span class="service-icon" aria-hidden="true">HDB</span>
-            <span class="service-name">HDB</span>
-            <span class="service-description" data-service-description="HDB">
-              Housing and flat matters
-            </span>
-          </button>
-
-          <button
-            class="service-card"
-            type="button"
-            data-service="HealthHub"
-            aria-pressed="false"
-          >
-            <span class="service-icon" aria-hidden="true">HH</span>
-            <span class="service-name">HealthHub</span>
-            <span class="service-description" data-service-description="HealthHub">
-              Appointments and records
-            </span>
-          </button>
-
-          <button
-            class="service-card"
-            type="button"
-            data-service="CHAS"
-            aria-pressed="false"
-          >
-            <span class="service-icon" aria-hidden="true">CH</span>
-            <span class="service-name">CHAS</span>
-            <span class="service-description" data-service-description="CHAS">
-              Healthcare subsidies
-            </span>
-          </button>
-
-          <button
-            class="service-card"
-            type="button"
-            data-service="CDC Vouchers"
-            aria-pressed="false"
-          >
-            <span class="service-icon" aria-hidden="true">CDC</span>
-            <span class="service-name">CDC Vouchers</span>
-            <span class="service-description" data-service-description="CDC Vouchers">
-              Claim and use vouchers
-            </span>
-          </button>
-
-          <button
-            class="service-card"
-            type="button"
-            data-service="LifeSG"
-            aria-pressed="false"
-          >
-            <span class="service-icon" aria-hidden="true">LS</span>
-            <span class="service-name">LifeSG</span>
-            <span class="service-description" data-service-description="LifeSG">
-              Benefits and services
-            </span>
-          </button>
-
-          <button
-            class="service-card"
-            type="button"
-            data-service="Singpass"
-            aria-pressed="false"
-          >
-            <span class="service-icon" aria-hidden="true">SP</span>
-            <span class="service-name">Singpass</span>
-            <span class="service-description" data-service-description="Singpass">
-              Login and account safety
-            </span>
-          </button>
-
-          <button
-            class="service-card"
-            type="button"
-            data-service="Financial Assistance"
-            aria-pressed="false"
-          >
-            <span class="service-icon" aria-hidden="true">FA</span>
-            <span class="service-name">Financial Assistance</span>
-            <span class="service-description" data-service-description="Financial Assistance">
-              Household support schemes
-            </span>
-          </button>
-        </div>
-
-        <button
-          id="chooseAnotherServiceTop"
-          type="button"
-          class="service-back-button"
-          data-i18n="chooseAnotherServiceBack"
-          hidden
-        >
-          &larr; Choose another service
-        </button>
-      </div>
-    </section>
-
-    <section
-      id="guidedOptionsPanel"
-      class="guided-options-panel"
-      aria-labelledby="guidedOptionsTitle"
-      hidden
-    >
-      <div class="content-wide">
-        <div class="guided-options-heading">
-          <div>
-            <p
-              id="guidedOptionsEyebrow"
-              class="guided-options-label"
-            >
-              Guided help
-            </p>
-
-            <h2 id="guidedOptionsTitle">
-              What would you like help with?
-            </h2>
-
-            <p id="guidedOptionsDescription">
-              Select one option. GovAssist will show the steps, and
-              you can type more questions afterwards.
-            </p>
-          </div>
-
-          <button
-            id="closeGuidedOptions"
-            type="button"
-            class="guided-secondary-button"
-          >
-            Close
-          </button>
-        </div>
-
-        <div
-          id="guidedOptionsList"
-          class="guided-options-list"
-        ></div>
-
-        <div class="guided-options-actions">
-          <button
-            id="chooseAnotherService"
-            type="button"
-            class="guided-secondary-button"
-          >
-            Choose another service
-          </button>
-
-          <button
-            id="guidedOtherQuestion"
-            type="button"
-            class="guided-secondary-button"
-          >
-            Type my own question
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <section
-      id="chat"
-      class="chat-section"
-      aria-labelledby="chatHeading"
-    >
-      <div class="content-wide">
-        <div class="chat-heading">
-          <div>
-            <p class="section-label" data-i18n="chatLabel">AI assistant</p>
-            <h2 id="chatHeading" data-i18n="chatTitle">Ask GovAssist AI</h2>
-            <p data-i18n="chatDescription">
-              Read the answer here, or type your own question.
-            </p>
-          </div>
-
-          <button
-            id="newConversation"
-            type="button"
-            class="secondary-button"
-          >
-            <span data-i18n="newConversation">New Conversation</span>
-          </button>
-        </div>
-
-        <aside
-          class="privacy-banner"
-          aria-label="Privacy reminder"
-          data-i18n-attr="aria-label:privacyAria"
-        >
-          <strong data-i18n="privacyTitle">Protect your information</strong>
-          <p data-i18n="privacyDescription">
-            Please do not enter your NRIC, Singpass password, OTP,
-            bank details or card details.
+          <p data-landing-i18n="heroDescription">
+            GovAssist AI helps elderly users ask questions, learn the steps,
+            and navigate common Singapore digital services with more confidence.
           </p>
-        </aside>
 
-        <div class="chat-container">
-          <div
-            id="chatMessages"
-            class="chat-messages"
-            aria-live="polite"
-            aria-label="GovAssist conversation"
-            data-i18n-attr="aria-label:chatMessagesAria"
-          ></div>
+          <div id="language" class="landing-language-panel">
+            <p class="landing-panel-title" data-landing-i18n="languageTitle">
+              Choose a language to start
+            </p>
 
-          <p
-            id="chatStatus"
-            class="chat-status"
-            aria-live="polite"
-          ></p>
-
-          <section
-            id="guidedFollowUpPanel"
-            class="guided-follow-up-panel"
-            aria-labelledby="guidedFollowUpTitle"
-            hidden
-          >
-            <h3 id="guidedFollowUpTitle">
-              What would you like to do next?
-            </h3>
-
-            <div class="guided-follow-up-actions">
-              <button
-                id="moreGuidedHelp"
-                type="button"
-                class="guided-action-button"
-              >
-                More help with this service
-              </button>
-
-              <button
-                id="followUpChooseService"
-                type="button"
-                class="guided-action-button"
-              >
-                Choose another service
-              </button>
-
-              <button
-                id="followUpTypeQuestion"
-                type="button"
-                class="guided-action-button"
-              >
-                Type my own question
-              </button>
-            </div>
-          </section>
-
-          <form id="chatForm" class="chat-form">
-            <label for="chatInput" data-i18n="chatInputLabel">Type your question</label>
-
-            <div class="chat-input-row">
-              <textarea
-                id="chatInput"
-                rows="2"
-                maxlength="1000"
-                placeholder="For example: How do I apply for CHAS?"
-                data-i18n-attr="placeholder:chatInputPlaceholder"
-                required
-              ></textarea>
-
-              <button
-                id="sendButton"
-                type="submit"
-                class="send-button"
-              >
-                <span data-i18n="send">Send</span>
-              </button>
+            <div class="landing-language-actions">
+              <button type="button" data-landing-language="English">English</button>
+              <button type="button" data-landing-language="Simplified Chinese">&#31616;&#20307;&#20013;&#25991;</button>
+              <button type="button" data-landing-language="Bahasa Melayu">Bahasa Melayu</button>
+              <button type="button" data-landing-language="Tamil">&#2980;&#2990;&#3007;&#2996;&#3021;</button>
             </div>
 
-            <p class="input-help" data-i18n="inputHelp">
-              Press Enter to send. Press Shift + Enter for a new line.
+            <p id="landingSelectedLanguage" class="landing-selected-setting">
+              Please choose a language.
             </p>
-          </form>
+          </div>
+
+          <a
+            id="landingStartButton"
+            class="landing-main-action landing-start-action is-disabled"
+            href="#language"
+            aria-disabled="true"
+            data-landing-i18n="startButton"
+          >
+            Get started
+          </a>
+
+          <p class="landing-safety-note" data-landing-i18n="safetyNote">
+            Do not enter NRIC, Singpass password, OTP or bank details.
+          </p>
         </div>
 
-        <section
-          id="feedbackPanel"
-          class="feedback-panel"
-          hidden
-          aria-labelledby="feedbackHeading"
-        >
-          <h3 id="feedbackHeading" data-i18n="feedbackTitle">Was this answer helpful?</h3>
+        <div class="landing-phone-scene" aria-hidden="true">
+          <div class="landing-blob"></div>
 
-          <p data-i18n="feedbackDescription">
-            Your feedback helps us make GovAssist clearer and easier
-            for elderly users.
-          </p>
-
-          <div class="feedback-buttons">
-            <button type="button" data-helpful="Yes" data-i18n="feedbackYes">
-              Yes, helpful
-            </button>
-
-            <button type="button" data-helpful="Partly" data-i18n="feedbackPartly">
-              Partly helpful
-            </button>
-
-            <button type="button" data-helpful="No" data-i18n="feedbackNo">
-              Not helpful
-            </button>
-
-            <button
-              id="detailedFeedback"
-              type="button"
-              class="detailed-feedback-button"
+          <div class="landing-photo-card">
+            <img
+              src="assets/hero-elderly-phone.png"
+              alt=""
             >
-              <span data-i18n="feedbackDetailed">Give Detailed Feedback</span>
-            </button>
           </div>
-        </section>
+
+          <div class="floating-card floating-card-one">
+            <strong data-landing-i18n="floatAskTitle">Ask</strong>
+            <span data-landing-i18n="floatAskText">Common questions</span>
+          </div>
+
+          <div class="floating-card floating-card-two">
+            <strong data-landing-i18n="floatLearnTitle">Learn</strong>
+            <span data-landing-i18n="floatLearnText">Step by step</span>
+          </div>
+
+          <div class="floating-card floating-card-three">
+            <strong data-landing-i18n="floatDoTitle">Do</strong>
+            <span data-landing-i18n="floatDoText">Anytime</span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section id="safety" class="safety-section" aria-labelledby="safetyHeading">
-      <div class="content-narrow safety-content">
-        <div class="large-icon" aria-hidden="true">!</div>
+    <section
+      id="how-it-works"
+      class="landing-info-section"
+      aria-labelledby="howHeading"
+    >
+      <div class="landing-section-inner">
+        <div class="landing-section-heading">
+          <p class="landing-eyebrow" data-landing-i18n="howEyebrow">How it works</p>
+          <h2 id="howHeading" data-landing-i18n="howTitle">Ask, learn, then try it yourself.</h2>
+        </div>
 
-        <div>
-          <p class="section-label" data-i18n="safetyLabel">Safety reminder</p>
-          <h2 id="safetyHeading" data-i18n="safetyTitle">Your safety matters</h2>
+        <div class="landing-step-grid">
+          <article>
+            <span>1</span>
+            <h3 data-landing-i18n="stepAskTitle">Ask a question</h3>
+            <p data-landing-i18n="stepAskText">Choose a guided task or type what you need help with.</p>
+          </article>
 
-          <p data-i18n="safetyDescriptionOne">
-            GovAssist AI will never ask for your NRIC, Singpass password,
-            OTP, bank details or card information.
-          </p>
+          <article>
+            <span>2</span>
+            <h3 data-landing-i18n="stepLearnTitle">Learn the steps</h3>
+            <p data-landing-i18n="stepLearnText">Read a simple answer in your selected language.</p>
+          </article>
 
-          <p data-i18n="safetyDescriptionTwo">
-            GovAssist provides general guidance only. Always confirm
-            important steps on the official government website.
-          </p>
+          <article>
+            <span>3</span>
+            <h3 data-landing-i18n="stepDoTitle">Do it anytime</h3>
+            <p data-landing-i18n="stepDoText">Use the guidance when you are ready to visit the official site.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section
+      id="features"
+      class="landing-info-section landing-feature-section"
+      aria-labelledby="featureHeading"
+    >
+      <div class="landing-section-inner">
+        <div class="landing-section-heading">
+          <p class="landing-eyebrow" data-landing-i18n="featuresEyebrow">Built for seniors</p>
+          <h2 id="featureHeading" data-landing-i18n="featuresTitle">Simple support, familiar controls.</h2>
+        </div>
+
+        <div class="landing-feature-grid">
+          <article>
+            <h3 data-landing-i18n="featureReadableTitle">Large readable interface</h3>
+            <p data-landing-i18n="featureReadableText">Text sizing, high contrast and clear buttons stay available on the assistant page.</p>
+          </article>
+
+          <article>
+            <h3 data-landing-i18n="featureGuidedTitle">Guided service choices</h3>
+            <p data-landing-i18n="featureGuidedText">Pick CPF, HDB, HealthHub, CHAS, Singpass and more before asking.</p>
+          </article>
+
+          <article>
+            <h3 data-landing-i18n="featurePrivacyTitle">Privacy reminders</h3>
+            <p data-landing-i18n="featurePrivacyText">The assistant reminds users not to share sensitive personal details.</p>
+          </article>
         </div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <p><strong data-i18n="footerTitle">GovAssist AI CA Project</strong></p>
-    <p data-i18n="footerDescription">
-      This is a student project and is not an official Singapore
-      Government service.
-    </p>
+  <footer class="landing-footer">
+    <p><strong data-landing-i18n="footerTitle">GovAssist AI CA Project</strong></p>
+    <p data-landing-i18n="footerText">This is a student project and is not an official Singapore Government service.</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="landing.js"></script>
 </body>
 </html>
