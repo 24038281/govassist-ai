@@ -434,6 +434,9 @@ const translations = {
       servicesDescription:
         "Choose the government service you need help with.",
       chooseAnotherServiceBack: "← Choose another service",
+      backToStart: "Back to Start",
+      backToServices: "Back to Services",
+      backToQuestions: "Back to Questions",
       chatLabel: "Step 3",
       chatTitle: "Ask GovAssist AI",
       chatDescription:
@@ -507,6 +510,10 @@ const translations = {
     systemMessages: {
       n8nMissing:
         "Please paste your n8n Embedded Chat URL into script.js first.",
+      sensitiveWarning:
+        "For your safety, please remove sensitive information such as NRIC, OTPs, passwords, bank details or card details before continuing.",
+      editMyMessage: "Edit my message",
+      sendAnyway: "Send anyway",
       privacyRemoved:
         "For your safety, personal information was removed before the message was sent to GovAssist AI.",
       emptyReply: "The workflow returned an empty response.",
@@ -523,7 +530,10 @@ const translations = {
       typeDifferentQuestion: "Type a different question",
       chooseAnotherService: "Choose another service",
       listenToAnswer: "Listen to answer",
-      printGuide: "Print guide",
+      printGuide: "🖨 Print Guide",
+      copyAnswer: "📋 Copy Answer",
+      copySuccess: "Answer copied.",
+      copyError: "Unable to copy answer.",
       pauseReading: "Pause",
       continueReading: "Continue",
       stopReading: "Stop",
@@ -1034,12 +1044,21 @@ const stopReadAloud = document.getElementById("stopReadAloud");
 const speechControlRow =
   document.querySelector(".speech-control-row");
 const pageContent = document.querySelector(".page-content");
+const chatIntroSection =
+  document.querySelector(".chat-intro-section");
 const servicesSection = document.getElementById("services");
+const backToStart = document.getElementById("backToStart");
 const chooseAnotherServiceTop =
   document.getElementById("chooseAnotherServiceTop");
+const commonWordsList =
+  document.getElementById("commonWordsList");
+const commonWordsExplanation =
+  document.getElementById("commonWordsExplanation");
 
 const guidedOptionsPanel =
   document.getElementById("guidedOptionsPanel");
+const backToServicesFromQuestions =
+  document.getElementById("backToServicesFromQuestions");
 const guidedOptionsEyebrow =
   document.getElementById("guidedOptionsEyebrow");
 const guidedOptionsTitle =
@@ -1065,6 +1084,10 @@ const followUpChooseService =
   document.getElementById("followUpChooseService");
 const followUpTypeQuestion =
   document.getElementById("followUpTypeQuestion");
+const backToQuestions =
+  document.getElementById("backToQuestions");
+const backToServicesFromChat =
+  document.getElementById("backToServicesFromChat");
 const startAssistantButton =
   document.getElementById("startAssistant");
 
@@ -1105,6 +1128,57 @@ let currentSpeechText = "";
 let activeReadContext = "";
 let autoReadAloudEnabled = false;
 let autoReadScheduleId = 0;
+let selectedCommonWord = "";
+
+// Common Words Explained: simple terms shown on the Pick Service page.
+const commonWordExplanations = [
+  {
+    word: "OTP",
+    explanation: "A one-time code sent to your phone."
+  },
+  {
+    word: "Login",
+    explanation: "Enter your account."
+  },
+  {
+    word: "Verify",
+    explanation: "Confirm that it is really you."
+  },
+  {
+    word: "Submit",
+    explanation: "Send the form."
+  },
+  {
+    word: "Password",
+    explanation:
+      "A secret word or code used to enter your account."
+  },
+  {
+    word: "Scam",
+    explanation:
+      "A trick used to steal your money or information."
+  },
+  {
+    word: "Singpass",
+    explanation:
+      "An account used to access Singapore government digital services."
+  },
+  {
+    word: "NRIC",
+    explanation:
+      "Your identity card number. Do not share it with the chatbot."
+  },
+  {
+    word: "CAPTCHA",
+    explanation: "A check to prove you are not a robot."
+  },
+  {
+    word: "Bank details",
+    explanation:
+      "Private information about your bank account. Do not share it online unless you are sure the website is official."
+  }
+];
+
 // Browser speech recognition is Chrome/Edge prefixed in some versions.
 const SpeechRecognitionConstructor =
   window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1155,6 +1229,7 @@ applyFontSize();
 setJourneyStage(currentJourneyStage);
 updateLanguageControls();
 updateSelectedServiceCard();
+renderCommonWords();
 
 
 function getCurrentUiText() {
@@ -1251,6 +1326,53 @@ function setServiceListCollapsed(collapsed) {
   chooseAnotherServiceTop.hidden = !shouldCollapse;
 }
 
+function renderCommonWords() {
+  if (!commonWordsList || !commonWordsExplanation) {
+    return;
+  }
+
+  commonWordsList.replaceChildren();
+
+  commonWordExplanations.forEach(item => {
+    const button = document.createElement("button");
+
+    button.type = "button";
+    button.className = "common-word-button";
+    button.textContent = item.word;
+    button.setAttribute("aria-pressed", "false");
+
+    // Clicking a word displays only that word's simple explanation.
+    button.addEventListener("click", () => {
+      showCommonWordExplanation(item);
+    });
+
+    commonWordsList.appendChild(button);
+  });
+}
+
+function showCommonWordExplanation(item) {
+  selectedCommonWord = item.word;
+
+  commonWordsExplanation.hidden = false;
+  commonWordsExplanation.replaceChildren();
+
+  const word = document.createElement("strong");
+  word.textContent = item.word;
+
+  const explanation = document.createElement("p");
+  explanation.textContent = item.explanation;
+
+  commonWordsExplanation.append(word, explanation);
+
+  commonWordsList
+    .querySelectorAll(".common-word-button")
+    .forEach(button => {
+      const selected = button.textContent === item.word;
+      button.classList.toggle("is-selected", selected);
+      button.setAttribute("aria-pressed", String(selected));
+    });
+}
+
 
 /* Create or retrieve the current conversation ID */
 
@@ -1276,6 +1398,58 @@ function getOrCreateSessionId() {
 
 
 /* Remove sensitive information before showing or sending it */
+
+function containsSensitiveKeywords(message) {
+  // These words warn users before the question is sent to the chatbot.
+  const sensitiveKeywordPatterns = [
+    /\bnric\b/i,
+    /\bic\s*number\b/i,
+    /\botp\b/i,
+    /\bone[-\s]*time\s*password\b/i,
+    /\bsingpass\s*password\b/i,
+    /\bpassword\b/i,
+    /\bbank\s*account\b/i,
+    /\bcard\s*number\b/i,
+    /\bcredit\s*card\b/i,
+    /\bdebit\s*card\b/i,
+    /\bcvv\b/i,
+    /\bpin\b/i
+  ];
+
+  return sensitiveKeywordPatterns.some(pattern =>
+    pattern.test(message)
+  );
+}
+
+function showSensitiveKeywordWarning(message) {
+  const text = getCurrentUiText().systemMessages;
+  const fallback = translations.English.systemMessages;
+
+  // The warning appears in the chat with two clear choices for the user.
+  addMessage(
+    "system",
+    text.sensitiveWarning || fallback.sensitiveWarning,
+    {
+      actions: [
+        {
+          label: text.editMyMessage || fallback.editMyMessage,
+          handler: () => {
+            chatInput.value = message;
+            chatInput.focus();
+          }
+        },
+        {
+          label: text.sendAnyway || fallback.sendAnyway,
+          handler: () => {
+            sendMessage(message, {
+              skipSensitiveKeywordWarning: true
+            });
+          }
+        }
+      ]
+    }
+  );
+}
 
 function redactSensitiveInformation(message) {
   let safeMessage = message;
@@ -1408,52 +1582,100 @@ function createMessageActions(actions) {
 }
 
 
-/* Print Guide: turns the latest answer into a simple printable guide. */
+/* Print Guide: turns only the latest chatbot answer into a simple printable guide. */
 
 function buildGuideText(answer = lastAssistantAnswer) {
-  return [
-    "GovAssist AI Guide",
-    "",
-    `Service: ${currentService || "General"}`,
-    `Language: ${currentLanguage}`,
-    lastUserQuestion ? `Question: ${lastUserQuestion}` : "",
-    "",
-    "Steps and guidance:",
-    answer,
-    "",
+  const guideLines = [
+    currentService ? `Selected service: ${currentService}` : "",
+    "Chatbot answer:",
+    answer || "",
     "Safety reminder:",
-    "Do not share your NRIC, Singpass password, OTP, bank details or card details.",
-    "",
-    "This is a student project and is not an official Singapore Government service."
-  ].filter(line => line !== "").join("\n");
+    "Do not share NRIC, Singpass password, OTP, bank details or card details.",
+    "GovAssist AI is a student prototype and is not an official Singapore Government service."
+  ];
+
+  return guideLines.filter(line => line !== "").join("\n\n");
 }
 
-function createGuideActions(answer) {
+function createGuideActions() {
   const text = getCurrentUiText().systemMessages;
   const fallback = translations.English.systemMessages;
 
   return [
     {
-      label: text.printGuide || fallback.printGuide || "Print guide",
-      handler: () => printGuide(answer)
+      label: text.printGuide || fallback.printGuide || "🖨 Print Guide",
+      // Always print the latest answer, even if an older Print Guide button is clicked.
+      handler: () => printGuide()
+    },
+    {
+      label: text.copyAnswer || fallback.copyAnswer || "📋 Copy Answer",
+      // The Copy Answer button uses the latest saved AI answer, not the button text or HTML.
+      handler: () => copyLatestAnswer()
     }
   ];
 }
 
-function printGuide(answer) {
-  const guideText = buildGuideText(answer);
-  const printWindow = window.open("", "_blank");
-
-  if (!printWindow) {
-    window.print();
+async function copyLatestAnswer() {
+  // Only copy when the chatbot has already saved an answer.
+  if (!lastAssistantAnswer) {
+    showCopyStatus(false);
     return;
   }
 
+  try {
+    await copyPlainText(lastAssistantAnswer);
+    showCopyStatus(true);
+  } catch (error) {
+    console.error(error);
+    showCopyStatus(false);
+  }
+}
+
+async function copyPlainText(text) {
+  // Use the modern clipboard API first when the browser allows it.
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  // Older browsers can still copy plain text with a temporary textarea.
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  const copied = document.execCommand("copy");
+  textarea.remove();
+
+  if (!copied) {
+    throw new Error("Copy command failed.");
+  }
+}
+
+function showCopyStatus(wasCopied) {
+  const text = getCurrentUiText().systemMessages;
+  const fallback = translations.English.systemMessages;
+
+  chatStatus.textContent = wasCopied
+    ? text.copySuccess || fallback.copySuccess || "Answer copied."
+    : text.copyError || fallback.copyError || "Unable to copy answer.";
+}
+
+function printGuide(answer = lastAssistantAnswer) {
+  // If there is no answer yet, do not open a print window.
+  if (!answer) {
+    return;
+  }
+
+  const guideText = buildGuideText(answer);
+  const printWindow = window.open("", "_blank");
   const title = "GovAssist AI Guide";
   const escapedTitle = escapeHtml(title);
   const escapedGuide = escapeHtml(guideText);
-
-  printWindow.document.write(`
+  const printMarkup = `
     <!DOCTYPE html>
     <html lang="${languageHtmlCode(currentLanguage)}">
     <head>
@@ -1485,11 +1707,41 @@ function printGuide(answer) {
       <pre>${escapedGuide}</pre>
     </body>
     </html>
-  `);
+  `;
 
+  if (!printWindow) {
+    printGuideFromHiddenFrame(printMarkup);
+    return;
+  }
+
+  printWindow.document.write(printMarkup);
   printWindow.document.close();
   printWindow.focus();
   printWindow.print();
+}
+
+function printGuideFromHiddenFrame(printMarkup) {
+  // This fallback still prints only the guide if the browser blocks the new window.
+  const printFrame = document.createElement("iframe");
+  printFrame.style.position = "fixed";
+  printFrame.style.right = "0";
+  printFrame.style.bottom = "0";
+  printFrame.style.width = "0";
+  printFrame.style.height = "0";
+  printFrame.style.border = "0";
+  document.body.appendChild(printFrame);
+
+  const frameDocument = printFrame.contentWindow.document;
+  frameDocument.open();
+  frameDocument.write(printMarkup);
+  frameDocument.close();
+
+  printFrame.contentWindow.focus();
+  printFrame.contentWindow.print();
+
+  setTimeout(() => {
+    printFrame.remove();
+  }, 1000);
 }
 
 function escapeHtml(value) {
@@ -1663,11 +1915,17 @@ function getServiceSelectionReadText() {
   const text = getCurrentUiText();
   const services = Object.entries(text.serviceDescriptions || {})
     .map(([service, description]) => `${service}: ${description}`);
+  const selectedExplanation = commonWordExplanations.find(
+    item => item.word === selectedCommonWord
+  );
 
   return [
     text.page.servicesTitle,
     text.page.servicesDescription,
-    services.join(". ")
+    services.join(". "),
+    selectedExplanation
+      ? `Common Words Explained. ${selectedExplanation.word}. ${selectedExplanation.explanation}`
+      : ""
   ].filter(Boolean).join(". ");
 }
 
@@ -2157,6 +2415,33 @@ function chooseAnotherServiceFlow() {
   }, 350);
 }
 
+function backToStartFlow() {
+  // Back to Start only changes the visible step; it keeps language and accessibility settings.
+  hideGuidedOptions();
+  guidedFollowUpPanel.hidden = true;
+  setServiceListCollapsed(false);
+  setJourneyStage("intro");
+
+  chatIntroSection?.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+
+  window.setTimeout(() => {
+    startAssistantButton?.focus({ preventScroll: true });
+  }, 250);
+}
+
+function backToQuestionsFlow() {
+  // Back to Questions reopens the choices for the currently selected service.
+  if (currentService) {
+    showGuidedOptions(currentService);
+    return;
+  }
+
+  chooseAnotherServiceFlow();
+}
+
 function focusOwnQuestion() {
   hideGuidedOptions();
   guidedFollowUpPanel.hidden = true;
@@ -2175,10 +2460,19 @@ function focusOwnQuestion() {
 
 /* Send a message to n8n */
 
-async function sendMessage(rawMessage) {
+async function sendMessage(rawMessage, options = {}) {
   const trimmedMessage = rawMessage.trim();
 
   if (!trimmedMessage || requestInProgress) {
+    return;
+  }
+
+  if (
+    !options.skipSensitiveKeywordWarning &&
+    containsSensitiveKeywords(trimmedMessage)
+  ) {
+    showSensitiveKeywordWarning(trimmedMessage);
+    chatInput.focus();
     return;
   }
 
@@ -2277,7 +2571,7 @@ async function sendMessage(rawMessage) {
     lastAssistantAnswer = reply;
     activeReadContext = "answer";
     addMessage("assistant", reply, {
-      actions: createGuideActions(reply)
+      actions: createGuideActions()
     });
 
     feedbackPanel.hidden = false;
@@ -2478,6 +2772,23 @@ document
 closeGuidedOptions.addEventListener("click", () => {
   chooseAnotherServiceFlow();
 });
+
+backToStart?.addEventListener("click", backToStartFlow);
+
+backToServicesFromQuestions?.addEventListener(
+  "click",
+  chooseAnotherServiceFlow
+);
+
+backToQuestions?.addEventListener(
+  "click",
+  backToQuestionsFlow
+);
+
+backToServicesFromChat?.addEventListener(
+  "click",
+  chooseAnotherServiceFlow
+);
 
 chooseAnotherService.addEventListener(
   "click",

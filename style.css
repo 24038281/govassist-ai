@@ -452,6 +452,80 @@ body.stage-answer .services-section {
   display: none;
 }
 
+.common-words-section {
+  max-width: 860px;
+  margin-top: 24px;
+  padding: 22px;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  background: #f4fbff;
+}
+
+.common-words-heading h3 {
+  margin-bottom: 6px;
+  color: var(--primary-dark);
+  font-size: 1.45rem;
+  line-height: 1.25;
+}
+
+.common-words-heading p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.common-words-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.common-word-button {
+  min-height: 48px;
+  padding: 11px 16px;
+  border: 2px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--primary-dark);
+  background: var(--surface);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.common-word-button:hover,
+.common-word-button.is-selected {
+  border-color: var(--primary);
+  color: #ffffff;
+  background: var(--primary);
+}
+
+.common-words-explanation {
+  margin-top: 18px;
+  padding: 18px;
+  border: 2px solid rgba(35, 214, 208, 0.55);
+  border-radius: 16px;
+  color: var(--text);
+  background: var(--surface);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.common-words-explanation[hidden] {
+  display: none;
+}
+
+.common-words-explanation strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--teal-dark);
+  font-size: 1.2rem;
+}
+
+.common-words-explanation p {
+  margin: 0;
+}
+
 .service-card {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -819,6 +893,30 @@ body.stage-answer .services-section {
   margin-top: 16px;
 }
 
+.simple-back-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.simple-back-button {
+  min-height: 48px;
+  padding: 11px 16px;
+  border: 2px solid var(--border-strong);
+  border-radius: 8px;
+  color: var(--primary-dark);
+  background: var(--surface);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.simple-back-button:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
 .guided-secondary-button,
 .guided-action-button {
   min-height: 48px;
@@ -1055,9 +1153,22 @@ body.high-contrast .service-icon,
 body.high-contrast .guided-option-button,
 body.high-contrast .guided-secondary-button,
 body.high-contrast .guided-action-button,
+body.high-contrast .simple-back-button,
+body.high-contrast .common-word-button,
 body.high-contrast .listen-answer-button,
 body.high-contrast .message-actions button {
   border-color: #000000;
+}
+
+body.high-contrast .common-words-section,
+body.high-contrast .common-words-explanation {
+  border-color: #000000;
+  background: #ffffff;
+}
+
+body.high-contrast .common-word-button.is-selected {
+  color: #ffffff;
+  background: #000000;
 }
 
 body.high-contrast .service-card.is-selected {

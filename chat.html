@@ -143,6 +143,18 @@
         aria-labelledby="servicesHeading"
       >
         <div class="content-wide">
+          <div class="simple-back-row">
+            <!-- Back to Start returns elderly users to the first start panel. -->
+            <button
+              id="backToStart"
+              type="button"
+              class="simple-back-button"
+              data-i18n="backToStart"
+            >
+              Back to Start
+            </button>
+          </div>
+
           <div class="section-header">
             <div>
               <p class="section-label" data-i18n="servicesLabel">Step 1</p>
@@ -235,6 +247,30 @@
           </button>
         </div>
 
+          <!-- Common Words Explained sits on Pick Service so users can learn words before asking the chatbot. -->
+          <section
+            class="common-words-section"
+            aria-labelledby="commonWordsHeading"
+          >
+            <div class="common-words-heading">
+              <h3 id="commonWordsHeading">Common Words Explained</h3>
+              <p>Tap a word to see what it means.</p>
+            </div>
+
+            <div
+              id="commonWordsList"
+              class="common-words-list"
+              aria-label="Common words"
+            ></div>
+
+            <div
+              id="commonWordsExplanation"
+              class="common-words-explanation"
+              aria-live="polite"
+              hidden
+            ></div>
+          </section>
+
           <button
             id="chooseAnotherServiceTop"
             type="button"
@@ -254,6 +290,18 @@
       hidden
     >
       <div class="content-wide">
+        <div class="simple-back-row">
+          <!-- Back to Services shows the service choices again. -->
+          <button
+            id="backToServicesFromQuestions"
+            type="button"
+            class="simple-back-button"
+            data-i18n="backToServices"
+          >
+            Back to Services
+          </button>
+        </div>
+
         <div class="guided-options-heading">
           <div>
             <p id="guidedOptionsEyebrow" class="guided-options-label">
@@ -302,6 +350,28 @@
 
     <section id="chat" class="chat-section" aria-labelledby="chatHeading">
       <div class="content-wide">
+        <div class="simple-back-row">
+          <!-- Back to Questions reopens the question choices for the selected service. -->
+          <button
+            id="backToQuestions"
+            type="button"
+            class="simple-back-button"
+            data-i18n="backToQuestions"
+          >
+            Back to Questions
+          </button>
+
+          <!-- Back to Services returns to the service selection screen. -->
+          <button
+            id="backToServicesFromChat"
+            type="button"
+            class="simple-back-button"
+            data-i18n="backToServices"
+          >
+            Back to Services
+          </button>
+        </div>
+
         <div class="chat-heading">
           <div>
             <p class="section-label" data-i18n="chatLabel">Step 3</p>
