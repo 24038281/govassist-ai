@@ -446,8 +446,10 @@ const translations = {
       chatMessagesAria: "GovAssist conversation",
       chatInputLabel: "Type your question",
       chatInputPlaceholder: "For example: How do I apply for CHAS?",
+      voiceInput: "Speak",
       send: "Send",
-      inputHelp: "Press Enter to send. Press Shift + Enter for a new line.",
+      inputHelp:
+        "Press Speak to use your voice. Press Enter to send. Press Shift + Enter for a new line.",
       feedbackTitle: "Was this answer helpful?",
       feedbackDescription:
         "Your feedback helps us make GovAssist clearer and easier for elderly users.",
@@ -521,9 +523,17 @@ const translations = {
       typeDifferentQuestion: "Type a different question",
       chooseAnotherService: "Choose another service",
       listenToAnswer: "Listen to answer",
+      printGuide: "Print guide",
       pauseReading: "Pause",
       continueReading: "Continue",
-      stopReading: "Stop"
+      stopReading: "Stop",
+      voiceInputUnsupported:
+        "Voice input is not supported by this browser. Please use Chrome or Edge.",
+      voiceListening: "Listening... speak now.",
+      voiceListeningButton: "Listening...",
+      voiceNoSpeech: "I did not hear anything. Please try again.",
+      voicePermissionDenied:
+        "Microphone permission was blocked. Please allow microphone access and try again."
     }
   }
 };
@@ -1009,6 +1019,7 @@ const messages = document.getElementById("chatMessages");
 const chatForm = document.getElementById("chatForm");
 const chatInput = document.getElementById("chatInput");
 const sendButton = document.getElementById("sendButton");
+const voiceInputButton = document.getElementById("voiceInputButton");
 const chatStatus = document.getElementById("chatStatus");
 const feedbackPanel = document.getElementById("feedbackPanel");
 const selectedLanguageText = document.getElementById("selectedLanguage");
@@ -1085,6 +1096,7 @@ let currentService =
   localStorage.getItem("govassistService") || "";
 
 let lastAssistantAnswer = "";
+let lastUserQuestion = "";
 let lastSafeMessage = "";
 let requestInProgress = false;
 let currentJourneyStage = hasChosenLanguage ? "intro" : "language";
@@ -1093,6 +1105,12 @@ let currentSpeechText = "";
 let activeReadContext = "";
 let autoReadAloudEnabled = false;
 let autoReadScheduleId = 0;
+// Browser speech recognition is Chrome/Edge prefixed in some versions.
+const SpeechRecognitionConstructor =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+let voiceRecognition = null;
+let isVoiceListening = false;
+let voiceInputBaseText = "";
 const FONT_BASE_PX = 18;
 const FONT_MIN_SCALE = 50;
 const FONT_MAX_SCALE = 150;
@@ -1387,6 +1405,105 @@ function createMessageActions(actions) {
   });
 
   return container;
+}
+
+
+/* Print Guide: turns the latest answer into a simple printable guide. */
+
+function buildGuideText(answer = lastAssistantAnswer) {
+  return [
+    "GovAssist AI Guide",
+    "",
+    `Service: ${currentService || "General"}`,
+    `Language: ${currentLanguage}`,
+    lastUserQuestion ? `Question: ${lastUserQuestion}` : "",
+    "",
+    "Steps and guidance:",
+    answer,
+    "",
+    "Safety reminder:",
+    "Do not share your NRIC, Singpass password, OTP, bank details or card details.",
+    "",
+    "This is a student project and is not an official Singapore Government service."
+  ].filter(line => line !== "").join("\n");
+}
+
+function createGuideActions(answer) {
+  const text = getCurrentUiText().systemMessages;
+  const fallback = translations.English.systemMessages;
+
+  return [
+    {
+      label: text.printGuide || fallback.printGuide || "Print guide",
+      handler: () => printGuide(answer)
+    }
+  ];
+}
+
+function printGuide(answer) {
+  const guideText = buildGuideText(answer);
+  const printWindow = window.open("", "_blank");
+
+  if (!printWindow) {
+    window.print();
+    return;
+  }
+
+  const title = "GovAssist AI Guide";
+  const escapedTitle = escapeHtml(title);
+  const escapedGuide = escapeHtml(guideText);
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="${languageHtmlCode(currentLanguage)}">
+    <head>
+      <meta charset="UTF-8">
+      <title>${escapedTitle}</title>
+      <style>
+        body {
+          max-width: 760px;
+          margin: 32px auto;
+          padding: 0 24px;
+          color: #1d2b36;
+          font-family: Arial, sans-serif;
+          font-size: 18px;
+          line-height: 1.6;
+        }
+
+        h1 {
+          font-size: 28px;
+        }
+
+        pre {
+          white-space: pre-wrap;
+          font-family: inherit;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>${escapedTitle}</h1>
+      <pre>${escapedGuide}</pre>
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, character => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    };
+
+    return entities[character];
+  });
 }
 
 function addLoadingMessage() {
@@ -1759,6 +1876,8 @@ function setLoading(isLoading) {
 
   chatStatus.textContent = "";
 
+  updateVoiceInputButton();
+
   if (!isLoading) {
     chatInput.focus();
   }
@@ -2077,6 +2196,7 @@ async function sendMessage(rawMessage) {
   const { safeMessage, detected } =
     redactSensitiveInformation(trimmedMessage);
   lastSafeMessage = safeMessage;
+  lastUserQuestion = safeMessage;
 
   currentService = detectService(safeMessage);
 
@@ -2156,7 +2276,9 @@ async function sendMessage(rawMessage) {
     loadingMessage.remove();
     lastAssistantAnswer = reply;
     activeReadContext = "answer";
-    addMessage("assistant", reply);
+    addMessage("assistant", reply, {
+      actions: createGuideActions(reply)
+    });
 
     feedbackPanel.hidden = false;
     showFollowUpActions();
@@ -2171,6 +2293,155 @@ async function sendMessage(rawMessage) {
   }
 }
 
+
+
+/* Voice input: converts speech into editable text before sending. */
+
+function getVoiceMessage(key) {
+  return (
+    getCurrentUiText().systemMessages?.[key] ||
+    translations.English.systemMessages?.[key] ||
+    ""
+  );
+}
+
+function getVoiceInputLabel() {
+  return getTranslationValue("page.voiceInput") || "Speak";
+}
+
+function voiceRecognitionLanguageCode(language) {
+  const codes = {
+    English: "en-SG",
+    // Mandarin-specific code improves Chinese speech input in Chrome/Edge.
+    "Simplified Chinese": "cmn-Hans-CN",
+    "Bahasa Melayu": "ms-MY",
+    Tamil: "ta-SG"
+  };
+
+  return codes[language] || "en-SG";
+}
+
+function updateVoiceInputButton() {
+  if (!voiceInputButton) {
+    return;
+  }
+
+  const unsupported = !SpeechRecognitionConstructor;
+  const label = isVoiceListening
+    ? getVoiceMessage("voiceListeningButton") || "Listening..."
+    : getVoiceInputLabel();
+
+  voiceInputButton.textContent = label;
+  voiceInputButton.disabled = requestInProgress || unsupported;
+  voiceInputButton.classList.toggle("is-listening", isVoiceListening);
+  voiceInputButton.setAttribute("aria-pressed", String(isVoiceListening));
+  voiceInputButton.setAttribute("aria-label", label);
+
+  if (unsupported) {
+    voiceInputButton.title =
+      getVoiceMessage("voiceInputUnsupported") ||
+      "Voice input is not supported by this browser.";
+  } else {
+    voiceInputButton.removeAttribute("title");
+  }
+}
+
+function ensureVoiceRecognition() {
+  if (!SpeechRecognitionConstructor) {
+    chatStatus.textContent =
+      getVoiceMessage("voiceInputUnsupported") ||
+      "Voice input is not supported by this browser.";
+    updateVoiceInputButton();
+    return null;
+  }
+
+  if (voiceRecognition) {
+    return voiceRecognition;
+  }
+
+  voiceRecognition = new SpeechRecognitionConstructor();
+  voiceRecognition.continuous = false;
+  voiceRecognition.interimResults = true;
+  voiceRecognition.maxAlternatives = 1;
+
+  voiceRecognition.addEventListener("start", () => {
+    isVoiceListening = true;
+    chatStatus.textContent =
+      getVoiceMessage("voiceListening") || "Listening... speak now.";
+    updateVoiceInputButton();
+  });
+
+  voiceRecognition.addEventListener("result", event => {
+    let transcript = "";
+
+    for (let index = event.resultIndex; index < event.results.length; index += 1) {
+      transcript += event.results[index][0].transcript;
+    }
+
+    transcript = transcript.trim();
+
+    if (!transcript) {
+      return;
+    }
+
+    // Fill the textarea only; users can check the text before pressing Send.
+    chatInput.value = voiceInputBaseText
+      ? `${voiceInputBaseText} ${transcript}`
+      : transcript;
+  });
+
+  voiceRecognition.addEventListener("error", event => {
+    if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+      chatStatus.textContent =
+        getVoiceMessage("voicePermissionDenied") ||
+        "Microphone permission was blocked.";
+      return;
+    }
+
+    if (event.error === "no-speech") {
+      chatStatus.textContent =
+        getVoiceMessage("voiceNoSpeech") ||
+        "I did not hear anything. Please try again.";
+    }
+  });
+
+  voiceRecognition.addEventListener("end", () => {
+    isVoiceListening = false;
+    updateVoiceInputButton();
+    chatInput.focus();
+  });
+
+  return voiceRecognition;
+}
+
+function toggleVoiceInput() {
+  if (requestInProgress) {
+    return;
+  }
+
+  const recognition = ensureVoiceRecognition();
+
+  if (!recognition) {
+    return;
+  }
+
+  if (isVoiceListening) {
+    recognition.stop();
+    return;
+  }
+
+  voiceInputBaseText = chatInput.value.trim();
+  recognition.lang = voiceRecognitionLanguageCode(currentLanguage);
+
+  try {
+    recognition.start();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+voiceInputButton?.addEventListener("click", toggleVoiceInput);
+updateVoiceInputButton();
 
 /* Send normal typed questions */
 
@@ -2266,6 +2537,7 @@ function updateLanguageControls() {
     `▶️ ${text.systemMessages.continueReading}`;
   stopReadAloud.textContent =
     `🛑 ${text.systemMessages.stopReading}`;
+  updateVoiceInputButton();
 
   document
     .querySelectorAll("[data-language]")
@@ -2375,6 +2647,7 @@ document
     setServiceListCollapsed(false);
 
     lastAssistantAnswer = "";
+    lastUserQuestion = "";
     chatInput.value = "";
     chatStatus.textContent = "";
 

@@ -221,6 +221,9 @@ const landingContinueReadAloud = document.getElementById(
 );
 const landingStopReadAloud = document.getElementById("landingStopReadAloud");
 const landingPageContent = document.querySelector(".page-content");
+const landingCarouselSlides = document.querySelectorAll(
+  ".landing-carousel-slide"
+);
 
 let selectedLandingLanguage =
   localStorage.getItem("govassistLanguage") || "";
@@ -366,6 +369,25 @@ function applyLandingLanguage() {
   updateLandingStartButton();
 }
 
+
+function startLandingCarousel() {
+  if (landingCarouselSlides.length <= 1) {
+    return;
+  }
+
+  let activeSlideIndex = 0;
+
+  landingCarouselSlides.forEach((slide, index) => {
+    slide.classList.toggle("is-active", index === activeSlideIndex);
+  });
+
+  window.setInterval(() => {
+    landingCarouselSlides[activeSlideIndex].classList.remove("is-active");
+    activeSlideIndex = (activeSlideIndex + 1) % landingCarouselSlides.length;
+    landingCarouselSlides[activeSlideIndex].classList.add("is-active");
+  }, 2000);
+}
+
 landingIncreaseText?.addEventListener("click", () => {
   landingFontScale = Math.min(
     landingFontScale + 10,
@@ -443,3 +465,4 @@ landingStartButton.addEventListener("click", event => {
 applyLandingLanguage();
 applyLandingFontSize();
 hideLandingSpeechControls();
+startLandingCarousel();
