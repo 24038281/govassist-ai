@@ -208,9 +208,46 @@ const landingStartButton = document.getElementById(
 const landingSelectedLanguage = document.getElementById(
   "landingSelectedLanguage"
 );
+const landingIncreaseText = document.getElementById("landingIncreaseText");
+const landingDecreaseText = document.getElementById("landingDecreaseText");
+const landingResetText = document.getElementById("landingResetText");
+const landingTextSize = document.getElementById("landingTextSize");
+const landingReadAloud = document.getElementById("landingReadAloud");
+const landingPauseReadAloud = document.getElementById(
+  "landingPauseReadAloud"
+);
+const landingContinueReadAloud = document.getElementById(
+  "landingContinueReadAloud"
+);
+const landingStopReadAloud = document.getElementById("landingStopReadAloud");
+const landingPageContent = document.querySelector(".page-content");
 
 let selectedLandingLanguage =
   localStorage.getItem("govassistLanguage") || "";
+const landingFontScaleKey = "govassistFontScale";
+const landingLegacyFontSizeKey = "govassistFontSize";
+const landingBaseFontPx = 18;
+const landingMinFontScale = 50;
+const landingMaxFontScale = 150;
+const landingDefaultFontScale = 100;
+
+function getLandingStoredFontScale() {
+  const storedScale = Number(localStorage.getItem(landingFontScaleKey));
+
+  if (Number.isFinite(storedScale) && storedScale > 0) {
+    return storedScale;
+  }
+
+  const legacySize = Number(localStorage.getItem(landingLegacyFontSizeKey));
+
+  if (Number.isFinite(legacySize) && legacySize > 0) {
+    return Math.round((legacySize / landingBaseFontPx) * 100);
+  }
+
+  return landingDefaultFontScale;
+}
+
+let landingFontScale = getLandingStoredFontScale();
 
 if (!landingTranslations[selectedLandingLanguage]) {
   selectedLandingLanguage = "";
@@ -221,6 +258,70 @@ function getLandingText() {
     landingTranslations[selectedLandingLanguage] ||
     landingTranslations.English
   );
+}
+
+function applyLandingFontSize() {
+  const clampedSize = Math.min(
+    landingMaxFontScale,
+    Math.max(landingMinFontScale, landingFontScale)
+  );
+
+  landingFontScale = clampedSize;
+  landingPageContent?.style.setProperty(
+    "--page-content-scale",
+    `${clampedSize}%`
+  );
+  localStorage.setItem(landingFontScaleKey, String(clampedSize));
+  localStorage.removeItem(landingLegacyFontSizeKey);
+
+  if (landingTextSize) {
+    landingTextSize.textContent = `Text Size: ${clampedSize}%`;
+  }
+
+  landingIncreaseText.disabled = clampedSize >= landingMaxFontScale;
+  landingDecreaseText.disabled = clampedSize <= landingMinFontScale;
+}
+
+function canUseLandingSpeech() {
+  return "speechSynthesis" in window;
+}
+
+function setLandingSpeechControlsVisible(visible) {
+  landingPauseReadAloud.hidden = !visible;
+  landingContinueReadAloud.hidden = !visible;
+  landingStopReadAloud.hidden = !visible;
+}
+
+function hideLandingSpeechControls() {
+  setLandingSpeechControlsVisible(false);
+}
+
+function readLandingIntro() {
+  if (!canUseLandingSpeech()) {
+    return;
+  }
+
+  const parts = [
+    document.getElementById("landingHeading")?.innerText,
+    document.querySelector("[data-landing-i18n='heroDescription']")?.innerText,
+    document.querySelector(".landing-panel-title")?.innerText,
+    landingSelectedLanguage?.innerText,
+    landingStartButton?.innerText,
+    document.querySelector(".landing-safety-note")?.innerText
+  ].filter(Boolean);
+
+  if (!parts.length) {
+    return;
+  }
+
+  setLandingSpeechControlsVisible(true);
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(parts.join(". "));
+  utterance.rate = 0.88;
+  utterance.lang = document.documentElement.lang || "en-US";
+  utterance.addEventListener("end", hideLandingSpeechControls);
+  utterance.addEventListener("error", hideLandingSpeechControls);
+  window.speechSynthesis.speak(utterance);
 }
 
 function updateLandingStartButton() {
@@ -265,6 +366,50 @@ function applyLandingLanguage() {
   updateLandingStartButton();
 }
 
+landingIncreaseText?.addEventListener("click", () => {
+  landingFontScale = Math.min(
+    landingFontScale + 10,
+    landingMaxFontScale
+  );
+  applyLandingFontSize();
+});
+
+landingDecreaseText?.addEventListener("click", () => {
+  landingFontScale = Math.max(
+    landingFontScale - 10,
+    landingMinFontScale
+  );
+  applyLandingFontSize();
+});
+
+landingResetText?.addEventListener("click", () => {
+  landingFontScale = landingDefaultFontScale;
+  applyLandingFontSize();
+});
+
+landingReadAloud?.addEventListener("click", readLandingIntro);
+
+landingPauseReadAloud?.addEventListener("click", () => {
+  if (canUseLandingSpeech() && window.speechSynthesis.speaking) {
+    window.speechSynthesis.pause();
+  }
+});
+
+landingContinueReadAloud?.addEventListener("click", () => {
+  if (canUseLandingSpeech() && window.speechSynthesis.paused) {
+    window.speechSynthesis.resume();
+  }
+});
+
+landingStopReadAloud?.addEventListener("click", () => {
+  if (!canUseLandingSpeech()) {
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  hideLandingSpeechControls();
+});
+
 landingLanguageButtons.forEach(button => {
   button.setAttribute("aria-pressed", "false");
 
@@ -296,3 +441,5 @@ landingStartButton.addEventListener("click", event => {
 });
 
 applyLandingLanguage();
+applyLandingFontSize();
+hideLandingSpeechControls();

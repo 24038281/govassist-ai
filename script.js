@@ -421,8 +421,9 @@ const translations = {
       accessibilityTitle: "Make the page easier to use",
       largerText: "Larger Text",
       smallerText: "Smaller Text",
+      resetText: "Reset Text",
       highContrast: "High Contrast",
-      readLastAnswer: "Read Last Answer",
+      readAloud: "Read Aloud",
       languageLabel: "First step",
       languageTitle: "Choose your language",
       languageDescription:
@@ -578,8 +579,9 @@ translations["Simplified Chinese"] = {
     accessibilityTitle: "让页面更容易使用",
     largerText: "放大文字",
     smallerText: "缩小文字",
+    resetText: "重置文字",
     highContrast: "高对比度",
-    readLastAnswer: "朗读上一条回答",
+    readAloud: "朗读",
     languageLabel: "第一步",
     languageTitle: "选择您的语言",
     languageDescription: "GovAssist 将在本次对话中使用此语言。",
@@ -733,8 +735,9 @@ translations["Bahasa Melayu"] = {
     accessibilityTitle: "Jadikan halaman ini lebih mudah digunakan",
     largerText: "Besarkan Teks",
     smallerText: "Kecilkan Teks",
+    resetText: "Tetapkan Semula Teks",
     highContrast: "Kontras Tinggi",
-    readLastAnswer: "Baca Jawapan Terakhir",
+    readAloud: "Baca Kuat",
     languageLabel: "Langkah pertama",
     languageTitle: "Pilih bahasa anda",
     languageDescription:
@@ -895,8 +898,9 @@ translations.Tamil = {
     accessibilityTitle: "இந்தப் பக்கத்தை பயன்படுத்த எளிதாக்கவும்",
     largerText: "பெரிய எழுத்து",
     smallerText: "சிறிய எழுத்து",
+    resetText: "உரை மீட்டமை",
     highContrast: "அதிக மாறுபாடு",
-    readLastAnswer: "கடைசி பதிலை வாசிக்கவும்",
+    readAloud: "சத்தமாக வாசிக்கவும்",
     languageLabel: "முதல் படி",
     languageTitle: "உங்கள் மொழியைத் தேர்ந்தெடுக்கவும்",
     languageDescription:
@@ -1008,10 +1012,17 @@ const sendButton = document.getElementById("sendButton");
 const chatStatus = document.getElementById("chatStatus");
 const feedbackPanel = document.getElementById("feedbackPanel");
 const selectedLanguageText = document.getElementById("selectedLanguage");
+const increaseTextButton = document.getElementById("increaseText");
+const decreaseTextButton = document.getElementById("decreaseText");
+const resetTextButton = document.getElementById("resetText");
+const chatTextSize = document.getElementById("chatTextSize");
 const pauseReadAloud = document.getElementById("pauseReadAloud");
 const continueReadAloud =
   document.getElementById("continueReadAloud");
 const stopReadAloud = document.getElementById("stopReadAloud");
+const speechControlRow =
+  document.querySelector(".speech-control-row");
+const pageContent = document.querySelector(".page-content");
 const servicesSection = document.getElementById("services");
 const chooseAnotherServiceTop =
   document.getElementById("chooseAnotherServiceTop");
@@ -1079,9 +1090,33 @@ let requestInProgress = false;
 let currentJourneyStage = hasChosenLanguage ? "intro" : "language";
 let currentSpeech = null;
 let currentSpeechText = "";
+let activeReadContext = "";
+let autoReadAloudEnabled = false;
+let autoReadScheduleId = 0;
+const FONT_BASE_PX = 18;
+const FONT_MIN_SCALE = 50;
+const FONT_MAX_SCALE = 150;
+const FONT_DEFAULT_SCALE = 100;
+const FONT_SCALE_KEY = "govassistFontScale";
+const LEGACY_FONT_SIZE_KEY = "govassistFontSize";
 
-let currentFontSize =
-  Number(localStorage.getItem("govassistFontSize")) || 18;
+function getStoredFontScale() {
+  const storedScale = Number(localStorage.getItem(FONT_SCALE_KEY));
+
+  if (Number.isFinite(storedScale) && storedScale > 0) {
+    return storedScale;
+  }
+
+  const legacySize = Number(localStorage.getItem(LEGACY_FONT_SIZE_KEY));
+
+  if (Number.isFinite(legacySize) && legacySize > 0) {
+    return Math.round((legacySize / FONT_BASE_PX) * 100);
+  }
+
+  return FONT_DEFAULT_SCALE;
+}
+
+let currentFontScale = getStoredFontScale();
 
 let sessionId = getOrCreateSessionId();
 
@@ -1131,9 +1166,13 @@ function applyInterfaceTranslations() {
   document
     .querySelectorAll("[data-i18n]")
     .forEach(element => {
-      element.textContent = getTranslationValue(
+      const translatedText = getTranslationValue(
         `page.${element.dataset.i18n}`
       );
+
+      element.textContent = element.dataset.i18nIcon
+        ? `${element.dataset.i18nIcon} ${translatedText}`
+        : translatedText;
     });
 
   document
@@ -1180,6 +1219,7 @@ function setJourneyStage(stage) {
   );
 
   document.body.classList.add(`stage-${stage}`);
+  scheduleAutoReadAloud();
 }
 
 function setServiceListCollapsed(collapsed) {
@@ -1417,18 +1457,26 @@ function speakAnswer(text) {
     return;
   }
 
+  setSpeechControlsVisible(true);
   window.speechSynthesis.cancel();
 
   currentSpeechText = text;
-  currentSpeech = new SpeechSynthesisUtterance(text);
-  currentSpeech.rate = 0.85;
-  currentSpeech.lang = languageSpeechCode(currentLanguage);
-  currentSpeech.addEventListener("end", () => {
-    currentSpeech = null;
-    currentSpeechText = "";
+  const utterance = new SpeechSynthesisUtterance(text);
+  currentSpeech = utterance;
+  utterance.rate = 0.85;
+  utterance.lang = languageSpeechCode(currentLanguage);
+  utterance.addEventListener("end", () => {
+    if (currentSpeech === utterance) {
+      hideSpeechControls();
+    }
+  });
+  utterance.addEventListener("error", () => {
+    if (currentSpeech === utterance) {
+      hideSpeechControls();
+    }
   });
 
-  window.speechSynthesis.speak(currentSpeech);
+  window.speechSynthesis.speak(utterance);
 }
 
 function pauseSpeech() {
@@ -1448,9 +1496,167 @@ function stopSpeech() {
     return;
   }
 
+  autoReadAloudEnabled = false;
+  autoReadScheduleId += 1;
   window.speechSynthesis.cancel();
+  hideSpeechControls();
+}
+
+function setSpeechControlsVisible(visible) {
+  if (speechControlRow) {
+    speechControlRow.hidden = !visible;
+  }
+
+  pauseReadAloud.hidden = !visible;
+  continueReadAloud.hidden = !visible;
+  stopReadAloud.hidden = !visible;
+}
+
+function hideSpeechControls() {
   currentSpeech = null;
   currentSpeechText = "";
+  setSpeechControlsVisible(false);
+}
+
+function scheduleAutoReadAloud() {
+  if (!autoReadAloudEnabled) {
+    return;
+  }
+
+  const scheduleId = ++autoReadScheduleId;
+
+  window.setTimeout(() => {
+    if (
+      scheduleId !== autoReadScheduleId ||
+      !autoReadAloudEnabled ||
+      requestInProgress
+    ) {
+      return;
+    }
+
+    const readText = getReadAloudText();
+
+    if (readText) {
+      speakAnswer(readText);
+    }
+  }, 350);
+}
+
+function getServiceSelectionReadText() {
+  const text = getCurrentUiText();
+  const services = Object.entries(text.serviceDescriptions || {})
+    .map(([service, description]) => `${service}: ${description}`);
+
+  return [
+    text.page.servicesTitle,
+    text.page.servicesDescription,
+    services.join(". ")
+  ].filter(Boolean).join(". ");
+}
+
+function getGuidedOptionsReadText() {
+  const options = Array
+    .from(guidedOptionsList.querySelectorAll("button"))
+    .map(button => button.textContent.trim())
+    .filter(Boolean);
+
+  return [
+    guidedOptionsTitle.textContent.trim(),
+    guidedOptionsDescription.textContent.trim(),
+    options.length ? options.join(". ") : "",
+    guidedOtherQuestion.textContent.trim(),
+    chooseAnotherService.textContent.trim()
+  ].filter(Boolean).join(". ");
+}
+
+function getIntroReadText() {
+  const text = getCurrentUiText().page;
+
+  return [
+    text.assistantIntroTitle,
+    text.assistantIntroDescription,
+    text.heroReassurance,
+    text.introPickService,
+    text.introChooseQuestion,
+    text.introReadAnswer
+  ].filter(Boolean).join(". ");
+}
+
+function getLanguageReadText() {
+  const text = getCurrentUiText().page;
+  const languages = Array
+    .from(document.querySelectorAll("[data-language]"))
+    .map(button => button.textContent.trim())
+    .filter(Boolean);
+
+  return [
+    text.languageTitle,
+    text.languagePrompt,
+    languages.join(". ")
+  ].filter(Boolean).join(". ");
+}
+
+function getChatInstructionsReadText() {
+  const text = getCurrentUiText().page;
+
+  return [
+    text.chatTitle,
+    text.chatDescription,
+    text.privacyTitle,
+    text.privacyDescription
+  ].filter(Boolean).join(". ");
+}
+
+function getFeedbackReadText() {
+  const options = Array
+    .from(feedbackPanel.querySelectorAll("[data-helpful]"))
+    .map(button => button.textContent.trim())
+    .filter(Boolean);
+
+  return [
+    document.getElementById("feedbackHeading")?.textContent.trim(),
+    feedbackPanel.querySelector("[data-i18n='feedbackDescription']")
+      ?.textContent.trim(),
+    options.length ? options.join(". ") : ""
+  ].filter(Boolean).join(". ");
+}
+
+function getReadAloudText() {
+  if (
+    activeReadContext === "feedback" &&
+    !feedbackPanel.hidden
+  ) {
+    return getFeedbackReadText();
+  }
+
+  if (currentJourneyStage === "answer" && lastAssistantAnswer) {
+    return lastAssistantAnswer;
+  }
+
+  if (!feedbackPanel.hidden) {
+    return getFeedbackReadText();
+  }
+
+  if (currentJourneyStage === "answer") {
+    return getChatInstructionsReadText();
+  }
+
+  if (
+    currentJourneyStage === "task" &&
+    !guidedOptionsPanel.hidden
+  ) {
+    return getGuidedOptionsReadText();
+  }
+
+  if (currentJourneyStage === "service") {
+    return getServiceSelectionReadText();
+  }
+
+  if (currentJourneyStage === "language") {
+    return getLanguageReadText();
+  }
+
+  return getIntroReadText();
 }
 
 function showRecoveryMessage() {
@@ -1885,6 +2091,7 @@ async function sendMessage(rawMessage) {
   hideGuidedOptions();
   guidedFollowUpPanel.hidden = true;
   feedbackPanel.hidden = true;
+  lastAssistantAnswer = "";
   setJourneyStage("answer");
   setServiceListCollapsed(Boolean(currentService));
 
@@ -1948,10 +2155,12 @@ async function sendMessage(rawMessage) {
 
     loadingMessage.remove();
     lastAssistantAnswer = reply;
+    activeReadContext = "answer";
     addMessage("assistant", reply);
 
     feedbackPanel.hidden = false;
     showFollowUpActions();
+    scheduleAutoReadAloud();
   } catch (error) {
     console.error(error);
     loadingMessage.remove();
@@ -2030,6 +2239,16 @@ followUpTypeQuestion.addEventListener(
   focusOwnQuestion
 );
 
+feedbackPanel.addEventListener("focusin", () => {
+  activeReadContext = "feedback";
+  scheduleAutoReadAloud();
+});
+
+feedbackPanel.addEventListener("pointerenter", () => {
+  activeReadContext = "feedback";
+  scheduleAutoReadAloud();
+});
+
 
 /* Language buttons */
 
@@ -2041,10 +2260,12 @@ function updateLanguageControls() {
   selectedLanguageText.textContent = hasChosenLanguage
     ? text.selectedLanguage
     : text.languagePrompt;
-  pauseReadAloud.textContent = text.systemMessages.pauseReading;
+  pauseReadAloud.textContent =
+    `⏸️ ${text.systemMessages.pauseReading}`;
   continueReadAloud.textContent =
-    text.systemMessages.continueReading;
-  stopReadAloud.textContent = text.systemMessages.stopReading;
+    `▶️ ${text.systemMessages.continueReading}`;
+  stopReadAloud.textContent =
+    `🛑 ${text.systemMessages.stopReading}`;
 
   document
     .querySelectorAll("[data-language]")
@@ -2170,9 +2391,9 @@ document
 document
   .getElementById("increaseText")
   .addEventListener("click", () => {
-    currentFontSize = Math.min(
-      currentFontSize + 2,
-      28
+    currentFontScale = Math.min(
+      currentFontScale + 10,
+      FONT_MAX_SCALE
     );
 
     applyFontSize();
@@ -2182,25 +2403,46 @@ document
 document
   .getElementById("decreaseText")
   .addEventListener("click", () => {
-    currentFontSize = Math.max(
-      currentFontSize - 2,
-      12
+    currentFontScale = Math.max(
+      currentFontScale - 10,
+      FONT_MIN_SCALE
     );
 
     applyFontSize();
   });
 
 
+document
+  .getElementById("resetText")
+  .addEventListener("click", () => {
+    currentFontScale = FONT_DEFAULT_SCALE;
+    applyFontSize();
+    localStorage.removeItem(FONT_SCALE_KEY);
+  });
+
+
 function applyFontSize() {
-  document.documentElement.style.setProperty(
-    "--base-font-size",
-    `${currentFontSize}px`
+  const clampedScale = Math.min(
+    FONT_MAX_SCALE,
+    Math.max(FONT_MIN_SCALE, currentFontScale)
   );
 
-  localStorage.setItem(
-    "govassistFontSize",
-    currentFontSize
+  currentFontScale = clampedScale;
+
+  pageContent?.style.setProperty(
+    "--page-content-scale",
+    `${clampedScale}%`
   );
+
+  localStorage.setItem(FONT_SCALE_KEY, String(clampedScale));
+  localStorage.removeItem(LEGACY_FONT_SIZE_KEY);
+
+  if (chatTextSize) {
+    chatTextSize.textContent = `Text Size: ${clampedScale}%`;
+  }
+
+  increaseTextButton.disabled = clampedScale >= FONT_MAX_SCALE;
+  decreaseTextButton.disabled = clampedScale <= FONT_MIN_SCALE;
 }
 
 
@@ -2224,12 +2466,19 @@ document
   });
 
 
-/* Read the last AI answer aloud */
+/* Read the current context aloud */
 
 document
-  .getElementById("readLastAnswer")
+  .getElementById("readAloud")
   .addEventListener("click", () => {
-    if (!lastAssistantAnswer) {
+    if (!canUseSpeech()) {
+      return;
+    }
+
+    autoReadAloudEnabled = true;
+    const readText = getReadAloudText();
+
+    if (!readText) {
       addMessage(
         "system",
         getCurrentUiText().systemMessages.noAnswerToRead
@@ -2237,7 +2486,7 @@ document
       return;
     }
 
-    speakAnswer(lastAssistantAnswer);
+    speakAnswer(readText);
   });
 
 pauseReadAloud.addEventListener("click", pauseSpeech);

@@ -7,176 +7,216 @@
     content="width=device-width, initial-scale=1.0"
   >
   <title>GovAssist AI | Simple Government Website Guidance</title>
+  <link rel="icon" type="image/jpeg" href="assets/govassist-logo.jpg">
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="landing-page">
+  <header class="main-header landing-app-header">
+    <div class="header-inner">
+      <a
+        class="brand"
+        href="#top"
+        aria-label="GovAssist AI home"
+      >
+        <img
+          class="brand-logo"
+          src="assets/govassist-logo.jpg"
+          alt="GovAssist AI logo"
+          onerror="this.hidden=true; this.nextElementSibling.hidden=false;"
+        >
+        <span class="logo-fallback" hidden></span>
+      </a>
+
+      <div class="header-accessibility-slot" aria-label="Homepage accessibility controls">
+        <div class="landing-header-actions">
+          <div class="button-row toolbar-actions landing-toolbar-row landing-text-row">
+            <span id="landingTextSize" class="text-size-status">Text Size: 100%</span>
+            <button id="landingIncreaseText" type="button">🔍Larger Text</button>
+            <button id="landingDecreaseText" type="button">🔍Smaller Text</button>
+            <button id="landingResetText" type="button">↺ Reset Text</button>
+          </div>
+
+          <div class="button-row toolbar-actions landing-toolbar-row landing-speech-row">
+            <button id="landingReadAloud" type="button">🔊 Read Aloud</button>
+            <button id="landingPauseReadAloud" type="button" hidden>⏸ Pause</button>
+            <button id="landingContinueReadAloud" type="button" hidden>▶ Continue</button>
+            <button id="landingStopReadAloud" type="button" hidden>⏹ Stop</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
   <main id="top" class="landing-canvas">
-    <div class="landing-shape landing-shape-circle"></div>
-    <div class="landing-shape landing-shape-square"></div>
-    <div class="landing-shape landing-shape-plus"></div>
+    <div class="page-content">
+      <div class="landing-shape landing-shape-circle"></div>
+      <div class="landing-shape landing-shape-square"></div>
+      <div class="landing-shape landing-shape-plus"></div>
 
-    <section class="landing-shell" aria-labelledby="landingHeading">
-      <header class="landing-header">
-        <a class="landing-brand" href="#top" aria-label="GovAssist AI home">
-          <img
-            class="landing-logo"
-            src="assets/govassist-logo.png"
-            alt="GovAssist AI"
-            onerror="this.hidden=true; this.nextElementSibling.hidden=false;"
-          >
-          <span class="logo-fallback" hidden>GovAssist AI</span>
-        </a>
-
-        <nav class="landing-nav" aria-label="Landing navigation">
-          <a href="#features" data-landing-i18n="navFeatures">Features</a>
-          <a href="#how-it-works" data-landing-i18n="navHow">How it works</a>
-          <a href="#language" data-landing-i18n="navLanguage">Language</a>
-        </nav>
-      </header>
-
-      <div class="landing-hero-grid">
-        <div class="landing-copy">
-          <p class="landing-eyebrow" data-landing-i18n="eyebrow">
-            Friendly digital assistance
-          </p>
-
-          <h1 id="landingHeading">
-            <span data-landing-i18n="headingLineOne">Welcome to your simple</span>
-            <span data-landing-i18n="headingLineTwo">government website guide</span>
-          </h1>
-
-          <p data-landing-i18n="heroDescription">
-            GovAssist AI helps elderly users ask questions, learn the steps,
-            and navigate common Singapore digital services with more confidence.
-          </p>
-
-          <div id="language" class="landing-language-panel">
-            <p class="landing-panel-title" data-landing-i18n="languageTitle">
-              Choose a language to start
+      <section class="landing-shell" aria-labelledby="landingHeading">
+        <div class="landing-hero-grid">
+          <div class="landing-copy">
+            <p class="landing-eyebrow" data-landing-i18n="eyebrow">
+              Friendly digital assistance
             </p>
 
-            <div class="landing-language-actions">
-              <button type="button" data-landing-language="English">English</button>
-              <button type="button" data-landing-language="Simplified Chinese">&#31616;&#20307;&#20013;&#25991;</button>
-              <button type="button" data-landing-language="Bahasa Melayu">Bahasa Melayu</button>
-              <button type="button" data-landing-language="Tamil">&#2980;&#2990;&#3007;&#2996;&#3021;</button>
+            <h1 id="landingHeading">
+              <span data-landing-i18n="headingLineOne">Welcome to your simple</span>
+              <span data-landing-i18n="headingLineTwo">government website guide</span>
+            </h1>
+
+            <p data-landing-i18n="heroDescription">
+              GovAssist AI helps elderly users ask questions, learn the steps,
+              and navigate common Singapore digital services with more confidence.
+            </p>
+
+            <div id="language" class="landing-language-panel">
+              <p class="landing-panel-title" data-landing-i18n="languageTitle">
+                Choose a language to start
+              </p>
+
+              <div class="landing-language-actions">
+                <button type="button" data-landing-language="English">English</button>
+                <button type="button" data-landing-language="Simplified Chinese">&#31616;&#20307;&#20013;&#25991;</button>
+                <button type="button" data-landing-language="Bahasa Melayu">Bahasa Melayu</button>
+                <button type="button" data-landing-language="Tamil">&#2980;&#2990;&#3007;&#2996;&#3021;</button>
+              </div>
+
+              <p id="landingSelectedLanguage" class="landing-selected-setting">
+                Please choose a language.
+              </p>
             </div>
 
-            <p id="landingSelectedLanguage" class="landing-selected-setting">
-              Please choose a language.
+            <a
+              id="landingStartButton"
+              class="landing-main-action landing-start-action is-disabled"
+              href="#language"
+              aria-disabled="true"
+              data-landing-i18n="startButton"
+            >
+              Get started
+            </a>
+
+            <p class="landing-safety-note" data-landing-i18n="safetyNote">
+              Do not enter NRIC, Singpass password, OTP or bank details.
             </p>
           </div>
 
-          <a
-            id="landingStartButton"
-            class="landing-main-action landing-start-action is-disabled"
-            href="#language"
-            aria-disabled="true"
-            data-landing-i18n="startButton"
-          >
-            Get started
-          </a>
+          <div class="landing-phone-scene" aria-hidden="true">
+            <div class="landing-blob"></div>
 
-          <p class="landing-safety-note" data-landing-i18n="safetyNote">
-            Do not enter NRIC, Singpass password, OTP or bank details.
-          </p>
-        </div>
+            <div class="landing-photo-card">
+              <img
+                src="assets/hero-elderly-phone.png"
+                alt=""
+              >
+            </div>
 
-        <div class="landing-phone-scene" aria-hidden="true">
-          <div class="landing-blob"></div>
+            <div class="floating-card floating-card-one">
+              <strong data-landing-i18n="floatAskTitle">Ask</strong>
+              <span data-landing-i18n="floatAskText">Common questions</span>
+            </div>
 
-          <div class="landing-photo-card">
-            <img
-              src="assets/hero-elderly-phone.png"
-              alt=""
-            >
-          </div>
+            <div class="floating-card floating-card-two">
+              <strong data-landing-i18n="floatLearnTitle">Learn</strong>
+              <span data-landing-i18n="floatLearnText">Step by step</span>
+            </div>
 
-          <div class="floating-card floating-card-one">
-            <strong data-landing-i18n="floatAskTitle">Ask</strong>
-            <span data-landing-i18n="floatAskText">Common questions</span>
-          </div>
-
-          <div class="floating-card floating-card-two">
-            <strong data-landing-i18n="floatLearnTitle">Learn</strong>
-            <span data-landing-i18n="floatLearnText">Step by step</span>
-          </div>
-
-          <div class="floating-card floating-card-three">
-            <strong data-landing-i18n="floatDoTitle">Do</strong>
-            <span data-landing-i18n="floatDoText">Anytime</span>
+            <div class="floating-card floating-card-three">
+              <strong data-landing-i18n="floatDoTitle">Do</strong>
+              <span data-landing-i18n="floatDoText">Anytime</span>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <section
+        id="how-it-works"
+        class="landing-info-section"
+        aria-labelledby="howHeading"
+      >
+        <div class="landing-section-inner">
+          <div class="landing-section-heading">
+            <p class="landing-eyebrow" data-landing-i18n="howEyebrow">How it works</p>
+            <h2 id="howHeading" data-landing-i18n="howTitle">Ask, learn, then try it yourself.</h2>
+          </div>
+
+          <div class="landing-step-grid">
+            <article>
+              <span>1</span>
+              <h3 data-landing-i18n="stepAskTitle">Ask a question</h3>
+              <p data-landing-i18n="stepAskText">Choose a guided task or type what you need help with.</p>
+            </article>
+
+            <article>
+              <span>2</span>
+              <h3 data-landing-i18n="stepLearnTitle">Learn the steps</h3>
+              <p data-landing-i18n="stepLearnText">Read a simple answer in your selected language.</p>
+            </article>
+
+            <article>
+              <span>3</span>
+              <h3 data-landing-i18n="stepDoTitle">Do it anytime</h3>
+              <p data-landing-i18n="stepDoText">Use the guidance when you are ready to visit the official site.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="features"
+        class="landing-info-section landing-feature-section"
+        aria-labelledby="featureHeading"
+      >
+        <div class="landing-section-inner">
+          <div class="landing-section-heading">
+            <p class="landing-eyebrow" data-landing-i18n="featuresEyebrow">Built for seniors</p>
+            <h2 id="featureHeading" data-landing-i18n="featuresTitle">Simple support, familiar controls.</h2>
+          </div>
+
+          <div class="landing-feature-grid">
+            <article>
+              <h3 data-landing-i18n="featureReadableTitle">Large readable interface</h3>
+              <p data-landing-i18n="featureReadableText">Text sizing, high contrast and clear buttons stay available on the assistant page.</p>
+            </article>
+
+            <article>
+              <h3 data-landing-i18n="featureGuidedTitle">Guided service choices</h3>
+              <p data-landing-i18n="featureGuidedText">Pick CPF, HDB, HealthHub, CHAS, Singpass and more before asking.</p>
+            </article>
+
+            <article>
+              <h3 data-landing-i18n="featurePrivacyTitle">Privacy reminders</h3>
+              <p data-landing-i18n="featurePrivacyText">The assistant reminds users not to share sensitive personal details.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="video-guide">
+        <div class="container">
+            <h2>Watch a Step-by-Step Guide</h2>
+            <p>
+                Learn how to use GovAssist AI by following this short video tutorial.
+            </p>
+
+            <div class="video-wrapper">
+                <iframe
+                    src="https://share.synthesia.io/embeds/videos/6b7232d7-7a00-4de4-bc08-b2dd4992e594"
+                    loading="lazy"
+                    title="GovAssist AI Tutorial"
+                    allowfullscreen
+                    allow="encrypted-media; fullscreen; microphone; screen-wake-lock;">
+                </iframe>
+            </div>
+        </div>
     </section>
-
-    <section
-      id="how-it-works"
-      class="landing-info-section"
-      aria-labelledby="howHeading"
-    >
-      <div class="landing-section-inner">
-        <div class="landing-section-heading">
-          <p class="landing-eyebrow" data-landing-i18n="howEyebrow">How it works</p>
-          <h2 id="howHeading" data-landing-i18n="howTitle">Ask, learn, then try it yourself.</h2>
-        </div>
-
-        <div class="landing-step-grid">
-          <article>
-            <span>1</span>
-            <h3 data-landing-i18n="stepAskTitle">Ask a question</h3>
-            <p data-landing-i18n="stepAskText">Choose a guided task or type what you need help with.</p>
-          </article>
-
-          <article>
-            <span>2</span>
-            <h3 data-landing-i18n="stepLearnTitle">Learn the steps</h3>
-            <p data-landing-i18n="stepLearnText">Read a simple answer in your selected language.</p>
-          </article>
-
-          <article>
-            <span>3</span>
-            <h3 data-landing-i18n="stepDoTitle">Do it anytime</h3>
-            <p data-landing-i18n="stepDoText">Use the guidance when you are ready to visit the official site.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section
-      id="features"
-      class="landing-info-section landing-feature-section"
-      aria-labelledby="featureHeading"
-    >
-      <div class="landing-section-inner">
-        <div class="landing-section-heading">
-          <p class="landing-eyebrow" data-landing-i18n="featuresEyebrow">Built for seniors</p>
-          <h2 id="featureHeading" data-landing-i18n="featuresTitle">Simple support, familiar controls.</h2>
-        </div>
-
-        <div class="landing-feature-grid">
-          <article>
-            <h3 data-landing-i18n="featureReadableTitle">Large readable interface</h3>
-            <p data-landing-i18n="featureReadableText">Text sizing, high contrast and clear buttons stay available on the assistant page.</p>
-          </article>
-
-          <article>
-            <h3 data-landing-i18n="featureGuidedTitle">Guided service choices</h3>
-            <p data-landing-i18n="featureGuidedText">Pick CPF, HDB, HealthHub, CHAS, Singpass and more before asking.</p>
-          </article>
-
-          <article>
-            <h3 data-landing-i18n="featurePrivacyTitle">Privacy reminders</h3>
-            <p data-landing-i18n="featurePrivacyText">The assistant reminds users not to share sensitive personal details.</p>
-          </article>
-        </div>
-      </div>
-    </section>
+    </div>
   </main>
 
   <footer class="landing-footer">
-    <p><strong data-landing-i18n="footerTitle">GovAssist AI CA Project</strong></p>
+    <p><strong data-landing-i18n="footerTitle">GovAssist AI FA Project</strong></p>
     <p data-landing-i18n="footerText">This is a student project and is not an official Singapore Government service.</p>
   </footer>
 
