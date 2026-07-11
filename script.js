@@ -1044,6 +1044,10 @@ const stopReadAloud = document.getElementById("stopReadAloud");
 const speechControlRow =
   document.querySelector(".speech-control-row");
 const pageContent = document.querySelector(".page-content");
+const chatAccessibilityPanel = document.querySelector(
+  ".chat-accessibility-panel"
+);
+const chatMobileQuery = window.matchMedia("(max-width: 560px)");
 const chatIntroSection =
   document.querySelector(".chat-intro-section");
 const servicesSection = document.getElementById("services");
@@ -1233,6 +1237,14 @@ let currentFontScale = getStoredFontScale();
 
 let sessionId = getOrCreateSessionId();
 
+function syncChatAccessibilityPanel() {
+  if (!chatAccessibilityPanel) {
+    return;
+  }
+
+  chatAccessibilityPanel.open = !chatMobileQuery.matches;
+}
+
 const highContrastEnabled =
   localStorage.getItem("govassistHighContrast") === "true";
 
@@ -1246,6 +1258,12 @@ document
   .getElementById("contrastButton")
   .setAttribute("aria-pressed", String(highContrastEnabled));
 
+chatMobileQuery.addEventListener(
+  "change",
+  syncChatAccessibilityPanel
+);
+
+syncChatAccessibilityPanel();
 applyFontSize();
 setJourneyStage(currentJourneyStage);
 updateLanguageControls();
@@ -3054,9 +3072,14 @@ function applyFontSize() {
 
   currentFontScale = clampedScale;
 
+  document.documentElement.style.setProperty(
+    "--user-font-size",
+    `${(FONT_BASE_PX * clampedScale) / 100}px`
+  );
+
   pageContent?.style.setProperty(
     "--page-content-scale",
-    `${clampedScale}%`
+    String(clampedScale)
   );
 
   localStorage.setItem(FONT_SCALE_KEY, String(clampedScale));

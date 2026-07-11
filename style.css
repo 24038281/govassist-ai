@@ -16,6 +16,7 @@
   --danger-text: #5a3b00;
   --shadow: 0 8px 20px rgba(23, 59, 108, 0.08);
   --base-font-size: 18px;
+  --user-font-size: var(--base-font-size);
   --ui-font:
     system-ui,
     -apple-system,
@@ -39,7 +40,7 @@
 
 html {
   scroll-behavior: smooth;
-  font-size: 18px;
+  font-size: var(--user-font-size);
 }
 
 body {
@@ -148,7 +149,6 @@ h3 {
 
 .page-content {
   --page-content-scale: 100%;
-  zoom: var(--page-content-scale);
 }
 
 .main-header {
@@ -2361,6 +2361,11 @@ body.chat-page {
   min-height: 1px;
 }
 
+.landing-accessibility-panel > summary,
+.chat-accessibility-panel > summary {
+  display: none;
+}
+
 .landing-header-actions {
   display: grid;
   width: 100%;
@@ -3277,4 +3282,183 @@ body.high-contrast .reassurance {
 
 body.high-contrast .logo-fallback {
   color: #000000 !important;
+}
+
+@media (max-width: 560px) {
+  .chat-page .main-header,
+  .landing-page .main-header {
+    position: static;
+  }
+
+  .chat-page .header-inner,
+  .landing-page .header-inner {
+    width: min(100% - 24px, var(--content-wide));
+    min-height: 0;
+    gap: 12px;
+    padding: 10px 0 12px;
+  }
+
+  .chat-page .brand,
+  .landing-page .brand {
+    width: 100%;
+  }
+
+  .chat-page .brand-logo,
+  .landing-page .brand-logo {
+    width: auto;
+    max-width: min(230px, 72vw);
+    max-height: 70px;
+  }
+
+  .header-accessibility-slot,
+  .header-language-switch {
+    width: 100%;
+  }
+
+  .header-accessibility-slot,
+  .chat-accessibility-panel {
+    display: block;
+  }
+
+  .landing-accessibility-panel > summary,
+  .chat-accessibility-panel > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 46px;
+    padding: 9px 12px;
+    border: 2px solid rgba(255, 255, 255, 0.82);
+    border-radius: 12px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.13);
+    font-weight: 900;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .chat-accessibility-panel > summary {
+    width: min(100% - 24px, var(--content-wide));
+    margin-inline: auto;
+    color: var(--primary-dark);
+    background: #ffffff;
+  }
+
+  .landing-accessibility-panel > summary::-webkit-details-marker,
+  .chat-accessibility-panel > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .landing-accessibility-panel > summary::after,
+  .chat-accessibility-panel > summary::after {
+    content: "+";
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .landing-accessibility-panel[open] > summary::after,
+  .chat-accessibility-panel[open] > summary::after {
+    content: "-";
+  }
+
+  .landing-accessibility-panel[open] .landing-header-actions {
+    margin-top: 8px;
+  }
+
+  .chat-accessibility-panel[open] .header-accessibility-actions {
+    margin-top: 8px;
+  }
+
+  .landing-header-actions {
+    gap: 8px;
+  }
+
+  .landing-toolbar-row,
+  .header-accessibility-actions,
+  .speech-control-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 8px;
+  }
+
+  .landing-text-row .text-size-status,
+  .header-accessibility-actions .text-size-status {
+    grid-column: 1 / -1;
+  }
+
+  .text-size-status,
+  .landing-toolbar-row button,
+  .header-accessibility-actions button,
+  .speech-control-row button {
+    min-width: 0;
+    min-height: 44px;
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    line-height: 1.25;
+    white-space: normal;
+  }
+
+  .landing-speech-row {
+    grid-template-columns: 1fr;
+  }
+
+  .header-accessibility-banner {
+    padding: 10px 12px;
+  }
+
+  .header-language-switch {
+    justify-items: stretch;
+    gap: 6px;
+  }
+
+  .header-language-switch .language-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .header-language-switch .language-buttons button {
+    min-height: 40px;
+    padding: 7px 8px;
+    border-radius: 12px;
+  }
+
+  .chat-app-main {
+    padding-top: 12px;
+  }
+
+  .chat-page .content-wide,
+  .chat-page .content-narrow,
+  .chat-page .accessibility-section > *,
+  .chat-page .language-section > * {
+    width: min(100% - 24px, var(--content-wide));
+  }
+
+  .chat-intro-layout,
+  .chat-page .services-section > .content-wide,
+  .chat-page .guided-options-panel > .content-wide,
+  .chat-page .chat-section > .content-wide {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .landing-canvas {
+    padding: 18px 0 0;
+  }
+
+  .landing-shell {
+    width: min(100% - 20px, var(--content-wide));
+    padding: 16px;
+  }
+
+  .landing-copy > p:not(.landing-eyebrow):not(.landing-safety-note) {
+    font-size: 1rem;
+  }
+
+  .landing-language-actions button,
+  .landing-main-action {
+    min-height: 54px;
+  }
 }

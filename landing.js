@@ -239,6 +239,10 @@ const landingPageContent = document.querySelector(".page-content");
 const landingCarouselSlides = document.querySelectorAll(
   ".landing-carousel-slide"
 );
+const landingAccessibilityPanel = document.querySelector(
+  ".landing-accessibility-panel"
+);
+const landingMobileQuery = window.matchMedia("(max-width: 560px)");
 const videoLanguageTabs = Array.from(
   document.querySelectorAll("[data-video-language]")
 );
@@ -295,6 +299,14 @@ if (!landingTranslations[selectedLandingLanguage]) {
   selectedLandingLanguage = "";
 }
 
+function syncLandingAccessibilityPanel() {
+  if (!landingAccessibilityPanel) {
+    return;
+  }
+
+  landingAccessibilityPanel.open = !landingMobileQuery.matches;
+}
+
 function getLandingText() {
   return (
     landingTranslations[selectedLandingLanguage] ||
@@ -309,9 +321,13 @@ function applyLandingFontSize() {
   );
 
   landingFontScale = clampedSize;
+  document.documentElement.style.setProperty(
+    "--user-font-size",
+    `${(landingBaseFontPx * clampedSize) / 100}px`
+  );
   landingPageContent?.style.setProperty(
     "--page-content-scale",
-    `${clampedSize}%`
+    String(clampedSize)
   );
   localStorage.setItem(landingFontScaleKey, String(clampedSize));
   localStorage.removeItem(landingLegacyFontSizeKey);
@@ -564,6 +580,12 @@ landingStartButton.addEventListener("click", event => {
   landingLanguageButtons[0]?.focus({ preventScroll: true });
 });
 
+landingMobileQuery.addEventListener(
+  "change",
+  syncLandingAccessibilityPanel
+);
+
+syncLandingAccessibilityPanel();
 applyLandingLanguage();
 selectGuideVideo(
   guideVideos[selectedLandingLanguage]
