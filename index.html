@@ -207,14 +207,39 @@
 
       <section class="video-guide">
         <div class="container">
-            <h2>Watch a Step-by-Step Guide</h2>
-            <p>
+            <h2 data-landing-i18n="videoGuideTitle">Watch a Step-by-Step Guide</h2>
+            <p data-landing-i18n="videoGuideDescription">
                 Learn how to use GovAssist AI by following this short video tutorial.
+            </p>
+
+            <div
+              class="video-language-tabs"
+              role="tablist"
+              aria-label="Choose tutorial video language"
+              data-landing-i18n-aria-label="videoLanguageLabel"
+            >
+              <button type="button" role="tab" data-video-language="English" aria-selected="true">
+                English
+              </button>
+              <button type="button" role="tab" data-video-language="Simplified Chinese" aria-selected="false">
+                简体中文
+              </button>
+              <button type="button" role="tab" data-video-language="Bahasa Melayu" aria-selected="false">
+                Bahasa Melayu
+              </button>
+              <button type="button" role="tab" data-video-language="Tamil" aria-selected="false">
+                தமிழ்
+              </button>
+            </div>
+
+            <p id="videoLanguageStatus" class="video-language-status" aria-live="polite">
+              Showing the English guide video
             </p>
 
             <div class="video-wrapper">
                 <iframe
-                    src="https://share.synthesia.io/embeds/videos/6b7232d7-7a00-4de4-bc08-b2dd4992e594"
+                    id="guideVideoFrame"
+                    src="https://share.synthesia.io/embeds/videos/c1646c0a-4f10-49a1-a0da-fef4b2da27f3"
                     loading="lazy"
                     title="GovAssist AI Tutorial"
                     allowfullscreen

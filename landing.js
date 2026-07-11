@@ -46,6 +46,10 @@ const landingTranslations = {
     featurePrivacyTitle: "Privacy reminders",
     featurePrivacyText:
       "The assistant reminds users not to share sensitive personal details.",
+    videoGuideTitle: "Watch a Step-by-Step Guide",
+    videoGuideDescription:
+      "Learn how to use GovAssist AI by following this short video tutorial.",
+    videoLanguageLabel: "Choose tutorial video language",
     footerTitle: "GovAssist AI CA Project",
     footerText:
       "This is a student project and is not an official Singapore Government service."
@@ -93,6 +97,9 @@ const landingTranslations = {
     featurePrivacyTitle: "隐私提醒",
     featurePrivacyText:
       "助手会提醒用户不要分享敏感个人资料。",
+    videoGuideTitle: "观看分步指南",
+    videoGuideDescription: "通过这段简短的视频教程学习如何使用 GovAssist AI。",
+    videoLanguageLabel: "选择教程视频语言",
     footerTitle: "GovAssist AI 课程项目",
     footerText:
       "这是学生项目，并非新加坡政府官方服务。"
@@ -143,6 +150,10 @@ const landingTranslations = {
     featurePrivacyTitle: "Peringatan privasi",
     featurePrivacyText:
       "Pembantu mengingatkan pengguna supaya tidak berkongsi butiran peribadi sensitif.",
+    videoGuideTitle: "Tonton Panduan Langkah demi Langkah",
+    videoGuideDescription:
+      "Pelajari cara menggunakan GovAssist AI dengan mengikuti video tutorial ringkas ini.",
+    videoLanguageLabel: "Pilih bahasa video panduan",
     footerTitle: "Projek CA GovAssist AI",
     footerText:
       "Ini ialah projek pelajar dan bukan perkhidmatan rasmi Pemerintah Singapura."
@@ -193,6 +204,10 @@ const landingTranslations = {
     featurePrivacyTitle: "தனியுரிமை நினைவூட்டல்கள்",
     featurePrivacyText:
       "உணர்வுபூர்வமான தனிப்பட்ட விவரங்களை பகிர வேண்டாம் என்று உதவியாளர் நினைவூட்டும்.",
+    videoGuideTitle: "படிப்படியான வழிகாட்டியைப் பாருங்கள்",
+    videoGuideDescription:
+      "இந்தக் குறுகிய காணொளி வழிகாட்டியைப் பின்பற்றி GovAssist AI-ஐ எவ்வாறு பயன்படுத்துவது என்பதை அறியுங்கள்.",
+    videoLanguageLabel: "வழிகாட்டி காணொளியின் மொழியைத் தேர்ந்தெடுக்கவும்",
     footerTitle: "GovAssist AI CA திட்டம்",
     footerText:
       "இது மாணவர் திட்டம்; அதிகாரப்பூர்வ சிங்கப்பூர் அரசு சேவை அல்ல."
@@ -224,6 +239,30 @@ const landingPageContent = document.querySelector(".page-content");
 const landingCarouselSlides = document.querySelectorAll(
   ".landing-carousel-slide"
 );
+const videoLanguageTabs = Array.from(
+  document.querySelectorAll("[data-video-language]")
+);
+const guideVideoFrame = document.getElementById("guideVideoFrame");
+const videoLanguageStatus = document.getElementById("videoLanguageStatus");
+
+const guideVideos = {
+  English: {
+    url: "https://share.synthesia.io/embeds/videos/c1646c0a-4f10-49a1-a0da-fef4b2da27f3",
+    status: "Showing the English guide video"
+  },
+  "Simplified Chinese": {
+    url: "https://share.synthesia.io/embeds/videos/e7a445a4-45ef-47a0-b4c5-09af34b4ade2",
+    status: "正在显示简体中文指南视频"
+  },
+  "Bahasa Melayu": {
+    url: "https://share.synthesia.io/embeds/videos/35302657-6d36-41db-9a53-3e119799111a",
+    status: "Menunjukkan video panduan Bahasa Melayu"
+  },
+  Tamil: {
+    url: "https://share.synthesia.io/embeds/videos/26fb6024-6934-4802-be26-a9e72b53d8a9",
+    status: "தமிழ் வழிகாட்டி காணொளி காட்டப்படுகிறது"
+  }
+};
 
 let selectedLandingLanguage =
   localStorage.getItem("govassistLanguage") || "";
@@ -358,6 +397,16 @@ function applyLandingLanguage() {
         text[key] ?? landingTranslations.English[key] ?? "";
     });
 
+  document
+    .querySelectorAll("[data-landing-i18n-aria-label]")
+    .forEach(element => {
+      const key = element.dataset.landingI18nAriaLabel;
+      element.setAttribute(
+        "aria-label",
+        text[key] ?? landingTranslations.English[key] ?? ""
+      );
+    });
+
   landingLanguageButtons.forEach(button => {
     const selected =
       button.dataset.landingLanguage === selectedLandingLanguage;
@@ -368,6 +417,58 @@ function applyLandingLanguage() {
 
   updateLandingStartButton();
 }
+
+function selectGuideVideo(language, moveFocus = false) {
+  const video = guideVideos[language] || guideVideos.English;
+
+  videoLanguageTabs.forEach(tab => {
+    const selected = tab.dataset.videoLanguage === language;
+    tab.setAttribute("aria-selected", String(selected));
+    tab.tabIndex = selected ? 0 : -1;
+
+    if (selected && moveFocus) {
+      tab.focus();
+    }
+  });
+
+  if (guideVideoFrame && guideVideoFrame.src !== video.url) {
+    guideVideoFrame.src = video.url;
+  }
+
+  if (videoLanguageStatus) {
+    videoLanguageStatus.textContent = video.status;
+  }
+}
+
+videoLanguageTabs.forEach((tab, index) => {
+  tab.addEventListener("click", () => {
+    selectGuideVideo(tab.dataset.videoLanguage);
+  });
+
+  tab.addEventListener("keydown", event => {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
+      return;
+    }
+
+    event.preventDefault();
+    let nextIndex = index;
+
+    if (event.key === "ArrowRight") {
+      nextIndex = (index + 1) % videoLanguageTabs.length;
+    } else if (event.key === "ArrowLeft") {
+      nextIndex = (index - 1 + videoLanguageTabs.length) % videoLanguageTabs.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = videoLanguageTabs.length - 1;
+    }
+
+    selectGuideVideo(
+      videoLanguageTabs[nextIndex].dataset.videoLanguage,
+      true
+    );
+  });
+});
 
 
 function startLandingCarousel() {
@@ -444,6 +545,7 @@ landingLanguageButtons.forEach(button => {
     );
 
     applyLandingLanguage();
+    selectGuideVideo(selectedLandingLanguage);
   });
 });
 
@@ -463,6 +565,11 @@ landingStartButton.addEventListener("click", event => {
 });
 
 applyLandingLanguage();
+selectGuideVideo(
+  guideVideos[selectedLandingLanguage]
+    ? selectedLandingLanguage
+    : "English"
+);
 applyLandingFontSize();
 hideLandingSpeechControls();
 startLandingCarousel();

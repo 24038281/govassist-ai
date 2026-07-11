@@ -1067,8 +1067,6 @@ const guidedOptionsDescription =
   document.getElementById("guidedOptionsDescription");
 const guidedOptionsList =
   document.getElementById("guidedOptionsList");
-const closeGuidedOptions =
-  document.getElementById("closeGuidedOptions");
 const chooseAnotherService =
   document.getElementById("chooseAnotherService");
 const guidedOtherQuestion =
@@ -1130,54 +1128,77 @@ let autoReadAloudEnabled = false;
 let autoReadScheduleId = 0;
 let selectedCommonWord = "";
 
-// Common Words Explained: simple terms shown on the Pick Service page.
-const commonWordExplanations = [
-  {
-    word: "OTP",
-    explanation: "A one-time code sent to your phone."
+// Common Words Explained: the same interactive list, translated with the interface.
+const commonWordsTranslations = {
+  English: {
+    heading: "Common Words Explained",
+    instruction: "Tap a word to see what it means.",
+    ariaLabel: "Common words",
+    items: [
+      ["otp", "OTP", "A one-time code sent to your phone."],
+      ["login", "Login", "Enter your account."],
+      ["verify", "Verify", "Confirm that it is really you."],
+      ["submit", "Submit", "Send the form."],
+      ["password", "Password", "A secret word or code used to enter your account."],
+      ["scam", "Scam", "A trick used to steal your money or information."],
+      ["singpass", "Singpass", "An account used to access Singapore government digital services."],
+      ["nric", "NRIC", "Your identity card number. Do not share it with the chatbot."],
+      ["captcha", "CAPTCHA", "A check to prove you are not a robot."],
+      ["bank", "Bank details", "Private information about your bank account. Do not share it online unless you are sure the website is official."]
+    ]
   },
-  {
-    word: "Login",
-    explanation: "Enter your account."
+  "Simplified Chinese": {
+    heading: "常用词语解释",
+    instruction: "点击一个词语即可查看它的意思。",
+    ariaLabel: "常用词语",
+    items: [
+      ["otp", "OTP 一次性密码", "发送到您手机的一次性验证码。"],
+      ["login", "登录", "进入您的账户。"],
+      ["verify", "验证", "确认确实是您本人。"],
+      ["submit", "提交", "发送表格。"],
+      ["password", "密码", "用于进入您账户的秘密文字或代码。"],
+      ["scam", "诈骗", "骗取您的金钱或资料的手段。"],
+      ["singpass", "Singpass", "用于使用新加坡政府数码服务的账户。"],
+      ["nric", "NRIC 身份证号码", "您的身份证号码。请勿与聊天机器人分享。"],
+      ["captcha", "CAPTCHA 验证码", "用于证明您不是机器人的检查。"],
+      ["bank", "银行资料", "有关您银行账户的私人资料。除非确定网站是官方网站，否则请勿在网上分享。"]
+    ]
   },
-  {
-    word: "Verify",
-    explanation: "Confirm that it is really you."
+  "Bahasa Melayu": {
+    heading: "Penerangan Perkataan Biasa",
+    instruction: "Tekan perkataan untuk melihat maksudnya.",
+    ariaLabel: "Perkataan biasa",
+    items: [
+      ["otp", "OTP", "Kod sekali guna yang dihantar ke telefon anda."],
+      ["login", "Log masuk", "Masuk ke akaun anda."],
+      ["verify", "Sahkan", "Pastikan bahawa ia benar-benar anda."],
+      ["submit", "Hantar", "Hantar borang tersebut."],
+      ["password", "Kata laluan", "Perkataan atau kod rahsia untuk memasuki akaun anda."],
+      ["scam", "Penipuan", "Helah untuk mencuri wang atau maklumat anda."],
+      ["singpass", "Singpass", "Akaun untuk mengakses perkhidmatan digital pemerintah Singapura."],
+      ["nric", "NRIC", "Nombor kad pengenalan anda. Jangan kongsikannya dengan chatbot."],
+      ["captcha", "CAPTCHA", "Semakan untuk membuktikan bahawa anda bukan robot."],
+      ["bank", "Butiran bank", "Maklumat peribadi tentang akaun bank anda. Jangan kongsikannya dalam talian melainkan anda pasti laman web itu rasmi."]
+    ]
   },
-  {
-    word: "Submit",
-    explanation: "Send the form."
-  },
-  {
-    word: "Password",
-    explanation:
-      "A secret word or code used to enter your account."
-  },
-  {
-    word: "Scam",
-    explanation:
-      "A trick used to steal your money or information."
-  },
-  {
-    word: "Singpass",
-    explanation:
-      "An account used to access Singapore government digital services."
-  },
-  {
-    word: "NRIC",
-    explanation:
-      "Your identity card number. Do not share it with the chatbot."
-  },
-  {
-    word: "CAPTCHA",
-    explanation: "A check to prove you are not a robot."
-  },
-  {
-    word: "Bank details",
-    explanation:
-      "Private information about your bank account. Do not share it online unless you are sure the website is official."
+  Tamil: {
+    heading: "பொதுவான சொற்களின் விளக்கம்",
+    instruction: "ஒரு சொல்லைத் தட்டி அதன் பொருளைப் பாருங்கள்.",
+    ariaLabel: "பொதுவான சொற்கள்",
+    items: [
+      ["otp", "OTP ஒருமுறை குறியீடு", "உங்கள் கைப்பேசிக்கு அனுப்பப்படும் ஒருமுறை பயன்படுத்தும் குறியீடு."],
+      ["login", "உள்நுழைவு", "உங்கள் கணக்கிற்குள் செல்லுதல்."],
+      ["verify", "சரிபார்த்தல்", "அது உண்மையில் நீங்கள்தான் என்பதை உறுதிப்படுத்துதல்."],
+      ["submit", "சமர்ப்பித்தல்", "படிவத்தை அனுப்புதல்."],
+      ["password", "கடவுச்சொல்", "உங்கள் கணக்கிற்குள் செல்லப் பயன்படுத்தும் இரகசியச் சொல் அல்லது குறியீடு."],
+      ["scam", "மோசடி", "உங்கள் பணம் அல்லது தகவலைத் திருடப் பயன்படுத்தப்படும் தந்திரம்."],
+      ["singpass", "Singpass", "சிங்கப்பூர் அரசாங்க மின்னணுச் சேவைகளை அணுகப் பயன்படுத்தும் கணக்கு."],
+      ["nric", "NRIC", "உங்கள் அடையாள அட்டை எண். இதை உரையாடல் உதவியாளருடன் பகிர வேண்டாம்."],
+      ["captcha", "CAPTCHA", "நீங்கள் இயந்திரம் அல்ல என்பதை உறுதிப்படுத்தும் சோதனை."],
+      ["bank", "வங்கி விவரங்கள்", "உங்கள் வங்கிக் கணக்கைப் பற்றிய தனிப்பட்ட தகவல். இணையதளம் அதிகாரப்பூர்வமானது என்று உறுதியாகத் தெரிந்தால் மட்டுமே பகிரவும்."]
+    ]
   }
-];
+};
 
 // Browser speech recognition is Chrome/Edge prefixed in some versions.
 const SpeechRecognitionConstructor =
@@ -1331,27 +1352,48 @@ function renderCommonWords() {
     return;
   }
 
+  const content =
+    commonWordsTranslations[currentLanguage] ||
+    commonWordsTranslations.English;
+
+  document.getElementById("commonWordsHeading").textContent =
+    content.heading;
+  document.getElementById("commonWordsInstruction").textContent =
+    content.instruction;
+  commonWordsList.setAttribute("aria-label", content.ariaLabel);
   commonWordsList.replaceChildren();
 
-  commonWordExplanations.forEach(item => {
+  content.items.forEach(([key, word, explanation]) => {
     const button = document.createElement("button");
 
     button.type = "button";
     button.className = "common-word-button";
-    button.textContent = item.word;
-    button.setAttribute("aria-pressed", "false");
+    button.dataset.commonWord = key;
+    button.textContent = word;
+    button.setAttribute("aria-pressed", String(key === selectedCommonWord));
 
     // Clicking a word displays only that word's simple explanation.
     button.addEventListener("click", () => {
-      showCommonWordExplanation(item);
+      showCommonWordExplanation({ key, word, explanation });
     });
 
     commonWordsList.appendChild(button);
   });
+
+  const selectedItem = content.items.find(
+    ([key]) => key === selectedCommonWord
+  );
+
+  if (selectedItem) {
+    const [key, word, explanation] = selectedItem;
+    showCommonWordExplanation({ key, word, explanation });
+  } else {
+    commonWordsExplanation.hidden = true;
+  }
 }
 
 function showCommonWordExplanation(item) {
-  selectedCommonWord = item.word;
+  selectedCommonWord = item.key;
 
   commonWordsExplanation.hidden = false;
   commonWordsExplanation.replaceChildren();
@@ -1367,7 +1409,7 @@ function showCommonWordExplanation(item) {
   commonWordsList
     .querySelectorAll(".common-word-button")
     .forEach(button => {
-      const selected = button.textContent === item.word;
+      const selected = button.dataset.commonWord === item.key;
       button.classList.toggle("is-selected", selected);
       button.setAttribute("aria-pressed", String(selected));
     });
@@ -1915,8 +1957,11 @@ function getServiceSelectionReadText() {
   const text = getCurrentUiText();
   const services = Object.entries(text.serviceDescriptions || {})
     .map(([service, description]) => `${service}: ${description}`);
-  const selectedExplanation = commonWordExplanations.find(
-    item => item.word === selectedCommonWord
+  const commonWords =
+    commonWordsTranslations[currentLanguage] ||
+    commonWordsTranslations.English;
+  const selectedExplanation = commonWords.items.find(
+    ([key]) => key === selectedCommonWord
   );
 
   return [
@@ -1924,7 +1969,7 @@ function getServiceSelectionReadText() {
     text.page.servicesDescription,
     services.join(". "),
     selectedExplanation
-      ? `Common Words Explained. ${selectedExplanation.word}. ${selectedExplanation.explanation}`
+      ? `${commonWords.heading}. ${selectedExplanation[1]}. ${selectedExplanation[2]}`
       : ""
   ].filter(Boolean).join(". ");
 }
@@ -2296,7 +2341,6 @@ function renderGuidedOptions(service) {
   guidedOptionsTitle.textContent = text.guidedTitle(service);
   guidedOptionsDescription.textContent =
     text.guidedDescription;
-  closeGuidedOptions.textContent = text.close;
   chooseAnotherService.textContent = text.chooseAnother;
   guidedOtherQuestion.textContent = text.ownQuestion;
 
@@ -2769,10 +2813,6 @@ document
   });
 
 
-closeGuidedOptions.addEventListener("click", () => {
-  chooseAnotherServiceFlow();
-});
-
 backToStart?.addEventListener("click", backToStartFlow);
 
 backToServicesFromQuestions?.addEventListener(
@@ -2839,6 +2879,7 @@ function updateLanguageControls() {
   document.documentElement.lang =
     languageHtmlCode(currentLanguage);
   applyInterfaceTranslations();
+  renderCommonWords();
   selectedLanguageText.textContent = hasChosenLanguage
     ? text.selectedLanguage
     : text.languagePrompt;
