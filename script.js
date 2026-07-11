@@ -419,6 +419,7 @@ const translations = {
       journeyDoDescription: "Use the guidance when you are ready.",
       accessibilityLabel: "Accessibility",
       accessibilityTitle: "Make the page easier to use",
+      displayOptions: "Display Options",
       largerText: "Larger Text",
       smallerText: "Smaller Text",
       resetText: "Reset Text",
@@ -597,6 +598,7 @@ translations["Simplified Chinese"] = {
     journeyDoDescription: "准备好时，就按照指引操作。",
     accessibilityLabel: "辅助功能",
     accessibilityTitle: "让页面更容易使用",
+    displayOptions: "显示选项",
     largerText: "放大文字",
     smallerText: "缩小文字",
     resetText: "重置文字",
@@ -753,6 +755,7 @@ translations["Bahasa Melayu"] = {
     journeyDoDescription: "Gunakan panduan apabila anda sudah bersedia.",
     accessibilityLabel: "Kebolehcapaian",
     accessibilityTitle: "Jadikan halaman ini lebih mudah digunakan",
+    displayOptions: "Pilihan Paparan",
     largerText: "Besarkan Teks",
     smallerText: "Kecilkan Teks",
     resetText: "Tetapkan Semula Teks",
@@ -916,6 +919,7 @@ translations.Tamil = {
       "நீங்கள் தயாராக இருக்கும்போது வழிகாட்டலைப் பயன்படுத்துங்கள்.",
     accessibilityLabel: "அணுகல்தன்மை",
     accessibilityTitle: "இந்தப் பக்கத்தை பயன்படுத்த எளிதாக்கவும்",
+    displayOptions: "காட்சி விருப்பங்கள்",
     largerText: "பெரிய எழுத்து",
     smallerText: "சிறிய எழுத்து",
     resetText: "உரை மீட்டமை",
@@ -1047,7 +1051,7 @@ const pageContent = document.querySelector(".page-content");
 const chatAccessibilityPanel = document.querySelector(
   ".chat-accessibility-panel"
 );
-const chatMobileQuery = window.matchMedia("(max-width: 560px)");
+const chatMobileQuery = window.matchMedia("(max-width: 820px)");
 const chatIntroSection =
   document.querySelector(".chat-intro-section");
 const servicesSection = document.getElementById("services");
@@ -1258,10 +1262,14 @@ document
   .getElementById("contrastButton")
   .setAttribute("aria-pressed", String(highContrastEnabled));
 
-chatMobileQuery.addEventListener(
-  "change",
-  syncChatAccessibilityPanel
-);
+if (typeof chatMobileQuery.addEventListener === "function") {
+  chatMobileQuery.addEventListener(
+    "change",
+    syncChatAccessibilityPanel
+  );
+} else if (typeof chatMobileQuery.addListener === "function") {
+  chatMobileQuery.addListener(syncChatAccessibilityPanel);
+}
 
 syncChatAccessibilityPanel();
 applyFontSize();

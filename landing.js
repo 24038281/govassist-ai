@@ -16,6 +16,7 @@ const landingTranslations = {
     chooseLanguage: "Please choose a language.",
     startButton: "Get started",
     startAfterLanguage: "Please choose a language first.",
+    displayOptions: "Display Options",
     safetyNote:
       "Do not enter NRIC, Singpass password, OTP or bank details.",
     floatAskTitle: "Ask",
@@ -70,6 +71,7 @@ const landingTranslations = {
     chooseLanguage: "请选择一种语言。",
     startButton: "开始",
     startAfterLanguage: "请先选择一种语言。",
+    displayOptions: "显示选项",
     safetyNote:
       "请勿输入 NRIC、Singpass 密码、OTP 或银行资料。",
     floatAskTitle: "提问",
@@ -120,6 +122,7 @@ const landingTranslations = {
     chooseLanguage: "Sila pilih bahasa.",
     startButton: "Mula",
     startAfterLanguage: "Sila pilih bahasa dahulu.",
+    displayOptions: "Pilihan Paparan",
     safetyNote:
       "Jangan masukkan NRIC, kata laluan Singpass, OTP atau maklumat bank.",
     floatAskTitle: "Tanya",
@@ -174,6 +177,7 @@ const landingTranslations = {
     chooseLanguage: "ஒரு மொழியைத் தேர்ந்தெடுக்கவும்.",
     startButton: "தொடங்குங்கள்",
     startAfterLanguage: "முதலில் ஒரு மொழியைத் தேர்ந்தெடுக்கவும்.",
+    displayOptions: "காட்சி விருப்பங்கள்",
     safetyNote:
       "NRIC, Singpass கடவுச்சொல், OTP அல்லது வங்கி விவரங்களை உள்ளிட வேண்டாம்.",
     floatAskTitle: "கேள்",
@@ -242,7 +246,7 @@ const landingCarouselSlides = document.querySelectorAll(
 const landingAccessibilityPanel = document.querySelector(
   ".landing-accessibility-panel"
 );
-const landingMobileQuery = window.matchMedia("(max-width: 560px)");
+const landingMobileQuery = window.matchMedia("(max-width: 820px)");
 const videoLanguageTabs = Array.from(
   document.querySelectorAll("[data-video-language]")
 );
@@ -580,10 +584,14 @@ landingStartButton.addEventListener("click", event => {
   landingLanguageButtons[0]?.focus({ preventScroll: true });
 });
 
-landingMobileQuery.addEventListener(
-  "change",
-  syncLandingAccessibilityPanel
-);
+if (typeof landingMobileQuery.addEventListener === "function") {
+  landingMobileQuery.addEventListener(
+    "change",
+    syncLandingAccessibilityPanel
+  );
+} else if (typeof landingMobileQuery.addListener === "function") {
+  landingMobileQuery.addListener(syncLandingAccessibilityPanel);
+}
 
 syncLandingAccessibilityPanel();
 applyLandingLanguage();
